@@ -4,8 +4,8 @@
 
 ## ✨ Features
 
-- 🎯 **One Command Setup** - Clone, configure, and run with `lexia kickstart python`
-- 🌐 **Multi-Language Support** - Python (now), Node.js & Go (coming soon)
+- 🎯 **One Command Setup** - Clone, configure, and run with `lexia kickstart <language>`
+- 🌐 **Multi-Language Support** - Python ✅ | Node.js ✅ | Go (coming soon)
 - 🖥️ **Cross-Platform** - Works on Windows, Linux, and macOS
 - 📦 **No Dependencies** - Just Node.js (which you already have!)
 - 🎨 **Beautiful UI** - Colorful output with progress indicators
@@ -73,7 +73,7 @@ Quick setup for a new Lexia project in your preferred language.
 #### Available Languages:
 
 - **`python`** - Python-based agent (FastAPI + OpenAI) ✅ Available now
-- **`node`** - Node.js-based agent 🚧 Coming soon
+- **`node`** - Node.js-based agent (Express + OpenAI) ✅ Available now
 - **`go`** - Go-based agent 🚧 Coming soon
 
 #### `lexia kickstart python`
@@ -108,12 +108,31 @@ lexia kickstart python --no-start
 lexia kickstart python -d my-agent -p 4000 -a 5000
 ```
 
+#### `lexia kickstart node`
+
+Set up a Node.js-based Lexia agent with Express and OpenAI.
+
+**Options:** Same as Python (see above)
+
+**Examples:**
+
+```bash
+# Basic usage
+lexia kickstart node
+
+# Custom directory name
+lexia kickstart node --directory my-node-agent
+
+# Custom ports
+lexia kickstart node --port 8080 --agent-port 8000
+
+# All options combined
+lexia kickstart node -d my-agent -p 4000 -a 5000
+```
+
 #### Coming Soon:
 
 ```bash
-# Node.js agent (coming soon)
-lexia kickstart node
-
 # Go agent (coming soon)
 lexia kickstart go
 ```
@@ -282,9 +301,9 @@ Lexia CLI is designed to support multiple programming languages:
 
 ### Currently Available:
 - ✅ **Python** - Full support with FastAPI + OpenAI
+- ✅ **Node.js** - Full support with Express + OpenAI
 
 ### Coming Soon:
-- 🚧 **Node.js** - Express/Fastify + OpenAI
 - 🚧 **Go** - Gin/Fiber + OpenAI
 
 ### Future Languages:

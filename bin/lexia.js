@@ -8,11 +8,12 @@
 const { program } = require('commander');
 const chalk = require('chalk');
 const kickstartPython = require('../src/commands/kickstart-python');
+const kickstartNode = require('../src/commands/kickstart-node');
 
 program
   .name('lexia')
   .description('CLI tool for managing Lexia projects')
-  .version('0.1.2');
+  .version('0.2.1');
 
 // Kickstart command with subcommands for different languages
 const kickstartCmd = program
@@ -22,11 +23,14 @@ const kickstartCmd = program
     console.log(chalk.cyan('\n📚 Usage:'), chalk.white('lexia kickstart <language> [options]\n'));
     console.log(chalk.cyan('Available languages:\n'));
     console.log(chalk.green('  python'), '  - Python-based agent (FastAPI + OpenAI)', chalk.green('✓ Available'));
-    console.log(chalk.yellow('  node'), '    - Node.js-based agent', chalk.yellow('🚧 Coming soon'));
+    console.log(chalk.green('  node'), '    - Node.js-based agent (Express + OpenAI)', chalk.green('✓ Available'));
     console.log(chalk.yellow('  go'), '      - Go-based agent', chalk.yellow('🚧 Coming soon'));
     console.log();
-    console.log(chalk.cyan('Example:'), chalk.white('lexia kickstart python'));
-    console.log(chalk.cyan('Help:'), chalk.white('lexia kickstart python --help\n'));
+    console.log(chalk.cyan('Examples:'));
+    console.log(chalk.white('  lexia kickstart python'));
+    console.log(chalk.white('  lexia kickstart node'));
+    console.log();
+    console.log(chalk.cyan('Help:'), chalk.white('lexia kickstart <language> --help\n'));
   });
 
 // Python starter kit
@@ -39,14 +43,15 @@ kickstartCmd
   .option('--no-start', 'Skip starting the servers after setup')
   .action(kickstartPython);
 
-// Future language support (placeholders)
+// Node.js starter kit
 kickstartCmd
   .command('node')
-  .description('Set up a Node.js-based Lexia agent (Coming soon)')
-  .action(() => {
-    console.log(chalk.yellow('\n⚠ Node.js starter kit is coming soon!'));
-    console.log(chalk.cyan('For now, use:'), chalk.white('lexia kickstart python\n'));
-  });
+  .description('Set up a Node.js-based Lexia agent (Express + OpenAI)')
+  .option('-d, --directory <name>', 'Directory name for the project', 'lexia-kickstart')
+  .option('-p, --port <number>', 'Port for the frontend UI', '3000')
+  .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
+  .option('--no-start', 'Skip starting the servers after setup')
+  .action(kickstartNode);
 
 kickstartCmd
   .command('go')

@@ -9,12 +9,16 @@ Choose one of these methods:
 ### Method 1: Use directly with npx (No installation)
 ```bash
 npx @lexia/cli kickstart python
+# or
+npx @lexia/cli kickstart node
 ```
 
 ### Method 2: Install globally
 ```bash
 npm install -g @lexia/cli
 lexia kickstart python
+# or
+lexia kickstart node
 ```
 
 ### Method 3: Install from source
@@ -22,15 +26,21 @@ lexia kickstart python
 cd lexia-cli
 npm install
 npm link
-lexia kickstart python
+lexia kickstart python  # or node
 ```
 
 ## Basic Usage
 
-### 1. Start a New Python Agent
+### 1. Start a New Agent
 
+**Python Agent:**
 ```bash
 lexia kickstart python
+```
+
+**Node.js Agent:**
+```bash
+lexia kickstart node
 ```
 
 This command will:
@@ -42,18 +52,21 @@ This command will:
 
 **Done!** Open http://localhost:3000 in your browser 🎉
 
-### 2. Other Languages (Coming Soon)
+### 2. Other Languages
 
+**Node.js (Available Now):**
 ```bash
-# Node.js agent (coming soon)
 lexia kickstart node
+```
 
-# Go agent (coming soon)
+**Go (Coming Soon):**
+```bash
 lexia kickstart go
 ```
 
 ### 3. Custom Setup
 
+**Python:**
 ```bash
 # Custom directory name
 lexia kickstart python --directory my-ai-agent
@@ -63,6 +76,18 @@ lexia kickstart python --port 8080 --agent-port 8000
 
 # Setup without auto-start
 lexia kickstart python --no-start
+```
+
+**Node.js:**
+```bash
+# Custom directory name
+lexia kickstart node --directory my-node-agent
+
+# Custom ports  
+lexia kickstart node --port 8080 --agent-port 8000
+
+# Setup without auto-start
+lexia kickstart node --no-start
 ```
 
 ### 4. Stopping Servers

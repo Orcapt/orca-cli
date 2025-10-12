@@ -2,6 +2,37 @@
 
 All notable changes to the Lexia CLI will be documented in this file.
 
+## [0.2.1] - 2025-10-12
+
+### Fixed
+- Fixed Node.js agent startup by adding `--dev` flag to launch command
+- Fixed `@lexia/sdk` dependency to use npm package (`^1.0.0`) instead of local file reference
+- Removed automatic memory module creation (now included in GitHub repo)
+- Node.js agents now start correctly in development mode
+
+### Changed
+- Memory module is now tracked in the GitHub repo with correct method names
+- CLI no longer auto-creates memory files, uses files from cloned repo instead
+
+## [0.2.0] - 2025-10-12
+
+### Added
+- 🎉 **Node.js support!** - `lexia kickstart node` command for Node.js-based agents
+- Node.js starter kit integration with Express + OpenAI
+- Automatic npm dependency installation for Node.js projects
+- Support for cloning from `lexia-starter-kit-node-v1` repository
+
+### Changed
+- Updated help text to show Node.js as available (not coming soon)
+- Improved command examples in help output
+- Changed "Backend" to "Agent" throughout the CLI
+- Changed "Frontend" to "Lexia-UI" throughout the CLI
+
+### Technical
+- Added `src/commands/kickstart-node.js` for Node.js project setup
+- Node.js projects don't require Python or virtual environments
+- Streamlined dependency installation for Node.js (just `npm install`)
+
 ## [0.1.2] - 2025-10-12
 
 ### Fixed
