@@ -1,0 +1,41 @@
+{
+  "name": "@lexia/cli",
+  "version": "0.1.2",
+  "description": "CLI tool for managing Lexia projects - Quick setup and deployment",
+  "main": "src/index.js",
+  "bin": {
+    "lexia": "./bin/lexia.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "lexia",
+    "cli",
+    "ai",
+    "chatbot",
+    "agent",
+    "development"
+  ],
+  "author": "Xalantico",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0",
+    "cross-spawn": "^7.0.3",
+    "inquirer": "^8.2.5",
+    "ora": "^5.4.1",
+    "simple-git": "^3.19.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xalantico/lexia-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/Xalantico/lexia-cli/issues"
+  },
+  "homepage": "https://github.com/Xalantico/lexia-cli#readme"
+}
