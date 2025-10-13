@@ -1,6 +1,6 @@
 {
   "name": "@lexia/cli",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CLI tool for managing Lexia projects - Quick setup and deployment",
   "main": "src/index.js",
   "bin": {
@@ -37,5 +37,16 @@
   "bugs": {
     "url": "https://github.com/Xalantico/lexia-cli/issues"
   },
-  "homepage": "https://github.com/Xalantico/lexia-cli#readme"
+  "homepage": "https://github.com/Xalantico/lexia-cli#readme",
+  "files": [
+    "bin/",
+    "src/",
+    "lexia-kickstart/",
+    "README.md",
+    "LICENSE",
+    "QUICK_START.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
