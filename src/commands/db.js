@@ -84,20 +84,23 @@ async function dbCreate(options) {
   const spinner = ora('Creating database...').start();
 
   try {
-    const response = await makeApiRequest('POST', '/api/v1/db/create', credentials);
+    // Use schema API endpoint for better scalability
+    const response = await makeApiRequest('POST', '/api/v1/schema/create', credentials);
 
     spinner.succeed(chalk.green('Database created successfully!'));
 
     console.log(chalk.cyan('\n============================================================'));
     console.log(chalk.green('✓ Database Ready'));
     console.log(chalk.cyan('============================================================'));
-    console.log(chalk.white('Database:  '), chalk.yellow(response.database_name));
+    console.log(chalk.white('Database:  '), chalk.yellow(response.schema_name));
     console.log(chalk.white('Username:  '), chalk.yellow(response.username));
     console.log(chalk.white('Password:  '), chalk.yellow(response.password));
     console.log(chalk.white('Workspace: '), chalk.yellow(response.workspace_name));
     
     console.log(chalk.cyan('\n📋 Connection String:'));
-    const connString = `postgresql://${response.username}:${response.password}@localhost:5432/${response.database_name}`;
+    // Use the connection string from the response if available
+    const connString = response.connection_info?.connection_string || 
+      `postgresql://${response.username}:${response.password}@localhost:6432/tenants?options=-csearch_path%3D${response.schema_name}`;
     console.log(chalk.yellow(`   ${connString}`));
     
     console.log(chalk.cyan('\n💡 Save these credentials - they won\'t be shown again!'));
@@ -139,7 +142,8 @@ async function dbList() {
   const spinner = ora('Fetching databases...').start();
 
   try {
-    const response = await makeApiRequest('GET', '/api/v1/db/list', credentials);
+    // Use schema API endpoint
+    const response = await makeApiRequest('GET', '/api/v1/schema/list', credentials);
 
     spinner.succeed(chalk.green('Databases retrieved'));
 
@@ -152,7 +156,9 @@ async function dbList() {
       console.log(chalk.green(`✓ Found ${response.count} database${response.count > 1 ? 's' : ''}`));
       console.log(chalk.cyan('============================================================\n'));
       
-      response.databases.forEach((db, index) => {
+      // Response has 'schemas' array, but we show it as 'databases' to users
+      const databases = response.schemas || response.databases || [];
+      databases.forEach((db, index) => {
         console.log(chalk.white(`  ${index + 1}. ${db}`));
       });
     }
@@ -202,14 +208,16 @@ async function dbRemove(databaseName) {
   const spinner = ora('Deleting database...').start();
 
   try {
-    const response = await makeApiRequest('DELETE', `/api/v1/db/delete/${databaseName}`, credentials);
+    // Use schema API endpoint
+    const response = await makeApiRequest('DELETE', `/api/v1/schema/delete/${databaseName}`, credentials);
 
     spinner.succeed(chalk.green('Database deleted successfully!'));
 
     console.log(chalk.cyan('\n============================================================'));
     console.log(chalk.green('✓ Database Removed'));
     console.log(chalk.cyan('============================================================'));
-    console.log(chalk.white('Database:  '), chalk.yellow(response.database_name));
+    // Response has 'schema_name', but we show it as 'database' to users
+    console.log(chalk.white('Database:  '), chalk.yellow(response.schema_name || response.database_name));
     console.log(chalk.white('Workspace: '), chalk.yellow(response.workspace_name));
     console.log(chalk.cyan('============================================================\n'));
 
