@@ -9,17 +9,66 @@ const { program } = require('commander');
 const chalk = require('chalk');
 const kickstartPython = require('../src/commands/kickstart-python');
 const kickstartNode = require('../src/commands/kickstart-node');
+const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
 
 program
   .name('lexia')
   .description('CLI tool for managing Lexia projects')
   .version('0.2.1');
 
+// Middleware to check if user is logged in
+function requireAuth(commandName) {
+  if (!isLoggedIn()) {
+    console.log(chalk.red('\n✗ You must be logged in to use this command'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('lexia login'), chalk.cyan('first\n'));
+    process.exit(1);
+  }
+}
+
+// Login command
+program
+  .command('login')
+  .description('Authenticate with Lexia')
+  .action(login);
+
+// Logout command
+program
+  .command('logout')
+  .description('Clear stored credentials')
+  .action(() => {
+    if (clearCredentials()) {
+      console.log(chalk.green('\n✓ Successfully logged out\n'));
+    } else {
+      console.log(chalk.yellow('\n⚠ No credentials found\n'));
+    }
+  });
+
+// Status command
+program
+  .command('status')
+  .description('Check authentication status')
+  .action(() => {
+    const credentials = getCredentials();
+    if (credentials) {
+      console.log(chalk.cyan('\n============================================================'));
+      console.log(chalk.green('✓ Authenticated'));
+      console.log(chalk.cyan('============================================================'));
+      console.log(chalk.white('Mode:     '), chalk.yellow(credentials.mode === 'dev' ? 'Sandbox/Pro' : 'Team'));
+      console.log(chalk.white('Workspace:'), chalk.yellow(credentials.workspace));
+      console.log(chalk.white('Since:    '), chalk.yellow(new Date(credentials.timestamp).toLocaleString()));
+      console.log(chalk.cyan('============================================================\n'));
+    } else {
+      console.log(chalk.red('\n✗ Not authenticated'));
+      console.log(chalk.cyan('Run:'), chalk.yellow('lexia login'), chalk.cyan('to authenticate\n'));
+    }
+  });
+
 // Kickstart command with subcommands for different languages
 const kickstartCmd = program
   .command('kickstart')
   .description('Quick setup for a new Lexia project')
   .action(() => {
+    requireAuth('kickstart');
     console.log(chalk.cyan('\n📚 Usage:'), chalk.white('lexia kickstart <language> [options]\n'));
     console.log(chalk.cyan('Available languages:\n'));
     console.log(chalk.green('  python'), '  - Python-based agent (FastAPI + OpenAI)', chalk.green('✓ Available'));
@@ -41,7 +90,10 @@ kickstartCmd
   .option('-p, --port <number>', 'Port for the frontend UI', '3000')
   .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
   .option('--no-start', 'Skip starting the servers after setup')
-  .action(kickstartPython);
+  .action((options) => {
+    requireAuth('kickstart python');
+    kickstartPython(options);
+  });
 
 // Node.js starter kit
 kickstartCmd
@@ -51,7 +103,10 @@ kickstartCmd
   .option('-p, --port <number>', 'Port for the frontend UI', '3000')
   .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
   .option('--no-start', 'Skip starting the servers after setup')
-  .action(kickstartNode);
+  .action((options) => {
+    requireAuth('kickstart node');
+    kickstartNode(options);
+  });
 
 kickstartCmd
   .command('go')
