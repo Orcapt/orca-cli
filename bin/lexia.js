@@ -10,6 +10,7 @@ const chalk = require('chalk');
 const kickstartPython = require('../src/commands/kickstart-python');
 const kickstartNode = require('../src/commands/kickstart-node');
 const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
+const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 
 program
   .name('lexia')
@@ -61,6 +62,37 @@ program
       console.log(chalk.red('\n✗ Not authenticated'));
       console.log(chalk.cyan('Run:'), chalk.yellow('lexia login'), chalk.cyan('to authenticate\n'));
     }
+  });
+
+// UI commands
+const uiCmd = program
+  .command('ui')
+  .description('Manage Lexia UI installation and execution');
+
+uiCmd
+  .command('init')
+  .description('Install Lexia UI globally')
+  .action(() => {
+    requireAuth('ui init');
+    uiInit();
+  });
+
+uiCmd
+  .command('start')
+  .description('Start the Lexia UI')
+  .option('-p, --port <number>', 'Port for the frontend UI', '3000')
+  .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
+  .action((options) => {
+    requireAuth('ui start');
+    uiStart(options);
+  });
+
+uiCmd
+  .command('remove')
+  .description('Uninstall Lexia UI')
+  .action(() => {
+    requireAuth('ui remove');
+    uiRemove();
   });
 
 // Kickstart command with subcommands for different languages
