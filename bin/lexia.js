@@ -11,6 +11,7 @@ const kickstartPython = require('../src/commands/kickstart-python');
 const kickstartNode = require('../src/commands/kickstart-node');
 const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
+const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
 
 program
   .name('lexia')
@@ -93,6 +94,36 @@ uiCmd
   .action(() => {
     requireAuth('ui remove');
     uiRemove();
+  });
+
+// Database commands
+const dbCmd = program
+  .command('db')
+  .description('Manage PostgreSQL databases');
+
+dbCmd
+  .command('create')
+  .description('Create a new PostgreSQL database')
+  .option('--postgres', 'Create PostgreSQL database (default)', true)
+  .action((options) => {
+    requireAuth('db create');
+    dbCreate(options);
+  });
+
+dbCmd
+  .command('list')
+  .description('List all databases for your workspace')
+  .action(() => {
+    requireAuth('db list');
+    dbList();
+  });
+
+dbCmd
+  .command('remove <database-name>')
+  .description('Delete a database')
+  .action((databaseName) => {
+    requireAuth('db remove');
+    dbRemove(databaseName);
   });
 
 // Kickstart command with subcommands for different languages
