@@ -7,16 +7,23 @@
 
 const { program } = require('commander');
 const chalk = require('chalk');
+const path = require('path');
+const fs = require('fs');
 const kickstartPython = require('../src/commands/kickstart-python');
 const kickstartNode = require('../src/commands/kickstart-node');
 const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
 
+// Read version from package.json
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')
+);
+
 program
   .name('lexia')
   .description('CLI tool for managing Lexia projects')
-  .version('0.2.1');
+  .version(packageJson.version);
 
 // Middleware to check if user is logged in
 function requireAuth(commandName) {

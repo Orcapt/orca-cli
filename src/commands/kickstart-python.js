@@ -177,22 +177,28 @@ async function startFrontend(projectPath, port, agentPort) {
   const spinner = ora(`Starting Lexia-UI server on port ${port}...`).start();
   
   try {
-    const frontendProcess = spawnBackground('npx', [
-      '-y',
-      '@lexia/ui',
-      'lexia',
-      `--port=${port}`,
-      `--agent-port=${agentPort}`
-    ], {
-      cwd: projectPath
-    });
+    const tryStart = async (pkgOrBin) => {
+      const proc = spawnBackground('npx', [
+        '-y',
+        pkgOrBin,
+        `--port=${port}`,
+        `--agent-port=${agentPort}`
+      ], { cwd: projectPath });
+      // Wait for frontend to start
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      if (proc.exitCode !== null) {
+        throw new Error(`Frontend process exited immediately (${pkgOrBin})`);
+      }
+      return proc;
+    };
 
-    // Wait for frontend to start
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // Check if process is still running
-    if (frontendProcess.exitCode !== null) {
-      throw new Error('Frontend process exited immediately');
+    let frontendProcess;
+    try {
+      // Prefer new bin name
+      frontendProcess = await tryStart('lexia-ui');
+    } catch (_) {
+      // Fallback to package name
+      frontendProcess = await tryStart('@lexia/ui');
     }
 
     spinner.succeed(chalk.green(`Lexia-UI started (PID: ${frontendProcess.pid})`));
