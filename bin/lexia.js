@@ -14,6 +14,7 @@ const kickstartNode = require('../src/commands/kickstart-node');
 const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
+const fetchDoc = require('../src/commands/fetch-doc');
 
 // Read version from package.json
 const packageJson = JSON.parse(
@@ -185,6 +186,16 @@ kickstartCmd
     console.log(chalk.yellow('\n⚠ Go starter kit is coming soon!'));
     console.log(chalk.cyan('For now, use:'), chalk.white('lexia kickstart python\n'));
   });
+
+// Fetch commands
+const fetchCmd = program
+  .command('fetch')
+  .description('Fetch resources and documentation');
+
+fetchCmd
+  .command('doc')
+  .description('Download Lexia SDK documentation')
+  .action(fetchDoc);
 
 // Handle unknown commands
 program.on('command:*', () => {
