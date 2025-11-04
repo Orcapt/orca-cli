@@ -4,7 +4,7 @@
   "description": "CLI tool for managing Lexia projects - Quick setup and deployment",
   "main": "src/index.js",
   "bin": {
-    "lexia": "./bin/lexia.js"
+    "lexia": "bin/lexia.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Xalantico/lexia-cli"
+    "url": "git+https://github.com/Xalantico/lexia-cli.git"
   },
   "bugs": {
     "url": "https://github.com/Xalantico/lexia-cli/issues"
