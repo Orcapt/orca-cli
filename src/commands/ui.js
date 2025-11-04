@@ -9,6 +9,7 @@ const spawn = require('cross-spawn');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { ensurePortAvailable } = require('../utils');
 
 // Track UI installation status
 const UI_CONFIG_FILE = path.join(os.homedir(), '.lexia', 'ui-config.json');
@@ -162,6 +163,9 @@ async function uiStart(options) {
   console.log(chalk.cyan('============================================================\n'));
 
   try {
+    // Ensure port is available before starting
+    await ensurePortAvailable(parseInt(port), 'UI');
+    
     let uiProcess;
     
     // Always use npx with latest version to ensure we get the most recent version
