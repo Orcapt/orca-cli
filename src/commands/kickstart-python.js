@@ -16,6 +16,7 @@ const {
   runCommandSilent,
   spawnBackground,
   waitForPort,
+  ensurePortAvailable,
   print
 } = require('../utils');
 
@@ -287,6 +288,10 @@ async function kickstart(options) {
 
     // Start servers
     console.log();
+    // Ensure ports are available before starting
+    await ensurePortAvailable(agentPort, 'Agent');
+    await ensurePortAvailable(port, 'UI');
+    
     const backendProcess = await startBackend(projectPath, agentPort);
     const frontendProcess = await startFrontend(projectPath, port, agentPort);
 

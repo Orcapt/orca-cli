@@ -11,6 +11,7 @@ const simpleGit = require('simple-git');
 const {
   commandExists,
   spawnBackground,
+  ensurePortAvailable,
   print
 } = require('../utils');
 
@@ -358,6 +359,10 @@ async function kickstartNode(options) {
 
     // Start servers
     console.log();
+    // Ensure ports are available before starting
+    await ensurePortAvailable(agentPort, 'Agent');
+    await ensurePortAvailable(port, 'UI');
+    
     const agentProcess = await startAgent(projectPath, agentPort);
     const uiProcess = await startUI(projectPath, port, agentPort);
 

@@ -1,6 +1,6 @@
 {
   "name": "@lexia/cli",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "CLI tool for managing Lexia projects - Quick setup and deployment",
   "main": "src/index.js",
   "bin": {

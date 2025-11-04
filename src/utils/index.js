@@ -187,6 +187,140 @@ async function waitForPort(port, timeout = 10000) {
 }
 
 /**
+ * Check if a port is in use
+ * @param {number} port - Port to check
+ * @returns {Promise<boolean>}
+ */
+async function isPortInUse(port) {
+  const net = require('net');
+  
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    
+    server.once('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+    
+    server.once('listening', () => {
+      server.close();
+      resolve(false);
+    });
+    
+    server.listen(port, '127.0.0.1');
+  });
+}
+
+/**
+ * Kill process using a specific port
+ * @param {number} port - Port number
+ * @returns {Promise<boolean>} True if a process was killed
+ */
+async function killPort(port) {
+  const { exec } = require('child_process');
+  const util = require('util');
+  const execPromise = util.promisify(exec);
+  
+  try {
+    const isWindows = process.platform === 'win32';
+    const isMac = process.platform === 'darwin';
+    
+    if (isWindows) {
+      // Windows: Find and kill process using the port
+      try {
+        const { stdout } = await execPromise(`netstat -ano | findstr :${port}`);
+        const lines = stdout.trim().split('\n');
+        const pids = new Set();
+        
+        for (const line of lines) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && pid !== '0') {
+            pids.add(pid);
+          }
+        }
+        
+        for (const pid of pids) {
+          try {
+            await execPromise(`taskkill /F /PID ${pid}`);
+          } catch (e) {
+            // Process might already be dead
+          }
+        }
+        
+        return pids.size > 0;
+      } catch (error) {
+        return false;
+      }
+    } else if (isMac) {
+      // macOS: Use lsof to find and kill process
+      try {
+        const { stdout } = await execPromise(`lsof -ti:${port}`);
+        const pids = stdout.trim().split('\n').filter(pid => pid);
+        
+        for (const pid of pids) {
+          try {
+            await execPromise(`kill -9 ${pid}`);
+          } catch (e) {
+            // Process might already be dead
+          }
+        }
+        
+        return pids.length > 0;
+      } catch (error) {
+        return false;
+      }
+    } else {
+      // Linux: Use fuser or lsof
+      try {
+        const { stdout } = await execPromise(`lsof -ti:${port} 2>/dev/null || fuser ${port}/tcp 2>/dev/null`);
+        const pids = stdout.trim().split(/\s+/).filter(pid => pid);
+        
+        for (const pid of pids) {
+          try {
+            await execPromise(`kill -9 ${pid}`);
+          } catch (e) {
+            // Process might already be dead
+          }
+        }
+        
+        return pids.length > 0;
+      } catch (error) {
+        return false;
+      }
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Ensure port is available by killing any process using it
+ * @param {number} port - Port to check and free
+ * @param {string} portName - Name for logging (e.g., 'UI', 'Agent')
+ * @returns {Promise<void>}
+ */
+async function ensurePortAvailable(port, portName = 'Port') {
+  const chalk = require('chalk');
+  
+  if (await isPortInUse(port)) {
+    console.log(chalk.yellow(`⚠ ${portName} port ${port} is in use, killing the process...`));
+    const killed = await killPort(port);
+    
+    if (killed) {
+      console.log(chalk.green(`✓ Freed port ${port}`));
+      // Wait a moment for the port to be fully released
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } else {
+      console.log(chalk.yellow(`⚠ Could not kill process on port ${port}, will try to start anyway...`));
+    }
+  }
+}
+
+/**
  * Print formatted messages
  */
 const print = {
@@ -207,6 +341,9 @@ module.exports = {
   runCommandSilent,
   spawnBackground,
   waitForPort,
+  isPortInUse,
+  killPort,
+  ensurePortAvailable,
   print
 };
 

@@ -20,21 +20,23 @@ const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
  */
 function authenticate(mode, workspace, token) {
   return new Promise((resolve, reject) => {
-    const baseUrl = 'https://915c07a7-4cfa-48ab-96b8-b89ba77f0948.mock.pstmn.io';
-    const endpoint = mode === 'team' 
-      ? '/api/team/v1/auth' 
-      : '/api/dev/v1/auth';
-    
-    const url = new URL(endpoint, baseUrl);
+    // New production auth endpoint
+    const hostname = 'deploy-api.lexiaplatform.com';
+    const pathName = '/api/v1/auth';
+
+    // Map legacy 'dev' selection to 'pro' for the API
+    const modeValue = mode === 'team' ? 'team' : 'pro';
+
     const postData = JSON.stringify({
       workspace,
-      token
+      token,
+      mode: modeValue
     });
 
     const options = {
-      hostname: url.hostname,
+      hostname,
       port: 443,
-      path: url.pathname,
+      path: pathName,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

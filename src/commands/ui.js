@@ -156,13 +156,7 @@ async function uiStart(options) {
 
   console.log(chalk.white('Frontend:'), chalk.yellow(`http://localhost:${port}`));
   console.log(chalk.white('Backend: '), chalk.yellow(`http://localhost:${agentPort}`));
-  
-  if (isInstalled) {
-    console.log(chalk.green('\n✓ Using globally installed lexia-ui'));
-  } else {
-    console.log(chalk.yellow('\n⚠ Running via npx (not installed globally)'));
-    console.log(chalk.cyan('Tip:'), chalk.white('Run'), chalk.yellow('lexia ui init'), chalk.white('to install globally'));
-  }
+  console.log(chalk.green('\n✓ Using latest @lexia/ui via npx'));
   
   console.log(chalk.cyan('\n⚠ Press Ctrl+C to stop the UI\n'));
   console.log(chalk.cyan('============================================================\n'));
@@ -170,25 +164,14 @@ async function uiStart(options) {
   try {
     let uiProcess;
     
-    if (isInstalled) {
-      // Use globally installed binary
-      uiProcess = spawn(
-        'lexia-ui',
-        [`--port=${port}`, `--agent-port=${agentPort}`],
-        {
-          stdio: 'inherit'
-        }
-      );
-    } else {
-      // Fallback to npx
-      uiProcess = spawn(
-        'npx',
-        ['-y', '@lexia/ui', `--port=${port}`, `--agent-port=${agentPort}`],
-        {
-          stdio: 'inherit'
-        }
-      );
-    }
+    // Always use npx with latest version to ensure we get the most recent version
+    uiProcess = spawn(
+      'npx',
+      ['-y', '@lexia/ui@latest', `--port=${port}`, `--agent-port=${agentPort}`],
+      {
+        stdio: 'inherit'
+      }
+    );
 
     uiProcess.on('error', (error) => {
       console.log(chalk.red(`\n✗ ${error.message}\n`));
