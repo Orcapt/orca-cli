@@ -118,10 +118,9 @@ async function uiInit() {
       console.log(chalk.green('✓ Installation Complete'));
       console.log(chalk.cyan('============================================================'));
       console.log(chalk.white('\n📦 Package:'), chalk.yellow('@lexia/ui'));
-      console.log(chalk.white('🔧 Binary:'), chalk.yellow('lexia-ui'), chalk.white('(available globally)'));
+      console.log(chalk.white('📁 Type:'), chalk.white('React component library with built UI'));
       console.log(chalk.white('\nYou can now run:'));
       console.log(chalk.yellow('  • lexia ui start --port 3000 --agent-port 5001'));
-      console.log(chalk.yellow('  • lexia-ui --port 3000 --agent-port 5001'), chalk.gray('(direct)'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       spinner.fail(chalk.red('Installation failed'));
@@ -157,7 +156,8 @@ async function uiStart(options) {
 
   console.log(chalk.white('Frontend:'), chalk.yellow(`http://localhost:${port}`));
   console.log(chalk.white('Backend: '), chalk.yellow(`http://localhost:${agentPort}`));
-  console.log(chalk.green('\n✓ Using latest @lexia/ui via npx'));
+  console.log(chalk.green('\n✓ Serving @lexia/ui from global installation'));
+  console.log(chalk.gray(`   Configure your agent endpoint in the UI settings`));
   
   console.log(chalk.cyan('\n⚠ Press Ctrl+C to stop the UI\n'));
   console.log(chalk.cyan('============================================================\n'));
@@ -168,10 +168,40 @@ async function uiStart(options) {
     
     let uiProcess;
     
-    // Always use npx with latest version to ensure we get the most recent version
+    // Find the path to the installed @lexia/ui package
+    let uiDistPath;
+    
+    if (isInstalled) {
+      // Get the global node_modules path
+      const result = spawn.sync('npm', ['root', '-g'], {
+        encoding: 'utf8',
+        stdio: 'pipe'
+      });
+      
+      if (result.status === 0) {
+        const globalModulesPath = result.stdout.trim();
+        uiDistPath = path.join(globalModulesPath, '@lexia', 'ui', 'dist');
+        
+        if (!fs.existsSync(uiDistPath)) {
+          console.log(chalk.red(`\n✗ @lexia/ui is installed but dist folder not found at: ${uiDistPath}`));
+          console.log(chalk.yellow('\nTry reinstalling:'), chalk.white('lexia ui remove && lexia ui init\n'));
+          process.exit(1);
+        }
+      }
+    }
+    
+    if (!uiDistPath) {
+      console.log(chalk.red('\n✗ Could not find @lexia/ui installation'));
+      console.log(chalk.yellow('\nPlease run:'), chalk.white('lexia ui init\n'));
+      process.exit(1);
+    }
+    
+    console.log(chalk.gray(`Serving UI from: ${uiDistPath}\n`));
+    
+    // Serve the dist folder using http-server
     uiProcess = spawn(
       'npx',
-      ['-y', '@lexia/ui@latest', `--port=${port}`, `--agent-port=${agentPort}`],
+      ['-y', 'http-server', uiDistPath, '-p', port, '--cors', '-o'],
       {
         stdio: 'inherit'
       }
@@ -232,7 +262,7 @@ async function uiRemove() {
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Uninstallation Complete'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('\nThe lexia-ui binary has been removed.'));
+      console.log(chalk.white('\n@lexia/ui package has been removed.'));
       console.log(chalk.white('\nTo reinstall, run:'), chalk.yellow('lexia ui init'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
