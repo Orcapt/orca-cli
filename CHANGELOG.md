@@ -2,6 +2,19 @@
 
 All notable changes to the Lexia CLI will be documented in this file.
 
+## [0.4.1] - 2025-11-14
+
+### Fixed
+- Fixed `lexia ui start` command to work with @lexia/ui v1.1.0+
+- UI command now properly serves the dist folder using http-server instead of trying to run as executable
+- Updated messaging to accurately describe UI serving mechanism
+- Resolves "could not determine executable to run" error
+
+### Technical
+- @lexia/ui v1.1.0 removed the CLI executable and became a React component library
+- CLI now detects the installed @lexia/ui dist folder and serves it directly
+- Uses npx http-server to serve the pre-built UI
+
 ## [0.2.1] - 2025-10-12
 
 ### Fixed
