@@ -5,7 +5,7 @@
 
 // Main Lexia Deploy API
 // Can be overridden with LEXIA_API_URL environment variable
-const API_BASE_URL = process.env.LEXIA_API_URL || 'http://lexia-proxy-api.com:81' ||'https://deploy-api.lexiaplatform.com';
+const API_BASE_URL = process.env.LEXIA_API_URL  ||'https://deploy-api.lexiaplatform.com';
 
 // API Endpoints
 const API_ENDPOINTS = {
