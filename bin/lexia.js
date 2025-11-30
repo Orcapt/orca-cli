@@ -15,6 +15,19 @@ const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
 const fetchDoc = require('../src/commands/fetch-doc');
+const { 
+  bucketCreate, 
+  bucketList, 
+  bucketInfo,
+  bucketDelete,
+  fileUpload, 
+  fileDownload,
+  fileList,
+  fileDelete,
+  permissionAdd,
+  permissionList
+} = require('../src/commands/storage');
+const { lambdaDeploy, lambdaList, lambdaInvoke, lambdaLogs, lambdaRemove, lambdaInfo } = require('../src/commands/lambda');
 
 // Read version from package.json
 const packageJson = JSON.parse(
@@ -196,6 +209,185 @@ fetchCmd
   .command('doc')
   .description('Download Lexia SDK documentation')
   .action(fetchDoc);
+
+// Storage commands
+const storageCmd = program
+  .command('storage')
+  .description('Manage S3-like storage buckets and files');
+
+// Bucket subcommands
+const bucketCmd = storageCmd
+  .command('bucket')
+  .description('Manage storage buckets');
+
+bucketCmd
+  .command('create <name>')
+  .description('Create a new storage bucket')
+  .option('--public', 'Make bucket public', false)
+  .option('--versioning', 'Enable versioning', false)
+  .option('--no-encryption', 'Disable encryption')
+  .option('--encryption-type <type>', 'Encryption type (AES256 or aws:kms)', 'AES256')
+  .option('--description <text>', 'Bucket description')
+  .action((name, options) => {
+    requireAuth('storage bucket create');
+    bucketCreate(name, options);
+  });
+
+bucketCmd
+  .command('list')
+  .description('List all storage buckets')
+  .action(() => {
+    requireAuth('storage bucket list');
+    bucketList();
+  });
+
+bucketCmd
+  .command('info <name>')
+  .description('Get bucket information')
+  .action((name) => {
+    requireAuth('storage bucket info');
+    bucketInfo(name);
+  });
+
+bucketCmd
+  .command('delete <name>')
+  .description('Delete a storage bucket')
+  .option('--force', 'Force delete (remove all files)', false)
+  .action((name, options) => {
+    requireAuth('storage bucket delete');
+    bucketDelete(name, options);
+  });
+
+// File commands
+storageCmd
+  .command('upload <bucket> <file-path>')
+  .description('Upload file to bucket')
+  .option('--folder <path>', 'Remote folder path')
+  .option('--public', 'Make file public', false)
+  .action((bucket, filePath, options) => {
+    requireAuth('storage upload');
+    fileUpload(bucket, filePath, options);
+  });
+
+storageCmd
+  .command('download <bucket> <file-key> [local-path]')
+  .description('Download file from bucket')
+  .action((bucket, fileKey, localPath) => {
+    requireAuth('storage download');
+    fileDownload(bucket, fileKey, localPath);
+  });
+
+storageCmd
+  .command('files <bucket>')
+  .description('List files in bucket')
+  .option('--folder <path>', 'Filter by folder path')
+  .option('--page <number>', 'Page number', '1')
+  .option('--per-page <number>', 'Items per page', '50')
+  .action((bucket, options) => {
+    requireAuth('storage files');
+    fileList(bucket, options);
+  });
+
+storageCmd
+  .command('delete <bucket> <file-key>')
+  .description('Delete file from bucket')
+  .action((bucket, fileKey) => {
+    requireAuth('storage delete');
+    fileDelete(bucket, fileKey);
+  });
+
+// Permission commands
+const permissionCmd = storageCmd
+  .command('permission')
+  .description('Manage bucket permissions');
+
+permissionCmd
+  .command('add <bucket>')
+  .description('Add permission to bucket')
+  .option('--target-type <type>', 'Target type (user, workspace, public, api_key)', 'user')
+  .option('--target-id <id>', 'Target ID (user ID, workspace ID, etc.)')
+  .option('--resource-type <type>', 'Resource type (bucket, folder, file)', 'bucket')
+  .option('--resource-path <path>', 'Resource path (for folder/file permissions)')
+  .option('--read', 'Grant read permission', false)
+  .option('--write', 'Grant write permission', false)
+  .option('--delete', 'Grant delete permission', false)
+  .option('--list', 'Grant list permission', false)
+  .option('--valid-until <date>', 'Permission expiry date (ISO 8601)')
+  .option('--reason <text>', 'Reason for granting permission')
+  .action((bucket, options) => {
+    requireAuth('storage permission add');
+    permissionAdd(bucket, options);
+  });
+
+permissionCmd
+  .command('list <bucket>')
+  .description('List bucket permissions')
+  .action((bucket) => {
+    requireAuth('storage permission list');
+    permissionList(bucket);
+  });
+
+// Ship command - Deploy Docker images to Lambda
+program
+  .command('ship <function-name>')
+  .description('🚀 Deploy Docker image to AWS Lambda')
+  .option('--image <image>', 'Docker image (registry/image:tag)')
+  .option('--memory <mb>', 'Memory in MB', '512')
+  .option('--timeout <seconds>', 'Timeout in seconds', '30')
+  .option('--env <key=value>', 'Environment variable (can be repeated)', [])
+  .option('--env-file <path>', 'Path to .env file')
+  .action((functionName, options) => {
+    requireAuth('ship');
+    lambdaDeploy(functionName, options);
+  });
+
+// Lambda commands (alias for backward compatibility)
+const lambdaCmd = program
+  .command('lambda')
+  .description('Manage AWS Lambda functions');
+
+lambdaCmd
+  .command('list')
+  .description('List Lambda functions')
+  .action(() => {
+    requireAuth('lambda list');
+    lambdaList();
+  });
+
+lambdaCmd
+  .command('info <function-name>')
+  .description('Get Lambda function details')
+  .action((functionName) => {
+    requireAuth('lambda info');
+    lambdaInfo(functionName);
+  });
+
+lambdaCmd
+  .command('invoke <function-name>')
+  .description('Invoke Lambda function')
+  .option('--payload <json>', 'JSON payload')
+  .action((functionName, options) => {
+    requireAuth('lambda invoke');
+    lambdaInvoke(functionName, options);
+  });
+
+lambdaCmd
+  .command('logs <function-name>')
+  .description('Get Lambda function logs')
+  .option('--tail', 'Stream logs in real-time')
+  .option('--since <time>', 'Show logs since (e.g., 1h, 30m)', '10m')
+  .action((functionName, options) => {
+    requireAuth('lambda logs');
+    lambdaLogs(functionName, options);
+  });
+
+lambdaCmd
+  .command('remove <function-name>')
+  .description('Remove Lambda function')
+  .action((functionName) => {
+    requireAuth('lambda remove');
+    lambdaRemove(functionName);
+  });
 
 // Handle unknown commands
 program.on('command:*', () => {

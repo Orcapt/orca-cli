@@ -10,6 +10,8 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const https = require('https');
+const http = require('http');
+const { API_BASE_URL, API_ENDPOINTS } = require('../config');
 
 // Config file location in user's home directory
 const CONFIG_DIR = path.join(os.homedir(), '.lexia');
@@ -20,10 +22,12 @@ const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
  */
 function authenticate(mode, workspace, token) {
   return new Promise((resolve, reject) => {
-    // New production auth endpoint
-    const hostname = 'deploy-api.lexiaplatform.com';
-    const pathName = '/api/v1/auth';
-
+    // Parse API URL from config
+    const apiUrl = new URL(API_ENDPOINTS.AUTH, API_BASE_URL);
+    const hostname = apiUrl.hostname;
+    const pathName = apiUrl.pathname;
+    const isHttps = apiUrl.protocol === 'https:';
+    const httpModule = isHttps ? https : http;
     // Map legacy 'dev' selection to 'pro' for the API
     const modeValue = mode === 'team' ? 'team' : 'pro';
 
@@ -35,7 +39,7 @@ function authenticate(mode, workspace, token) {
 
     const options = {
       hostname,
-      port: 443,
+      port: apiUrl.port || (isHttps ? 443 : 80),
       path: pathName,
       method: 'POST',
       headers: {
@@ -44,7 +48,7 @@ function authenticate(mode, workspace, token) {
       }
     };
 
-    const req = https.request(options, (res) => {
+    const req = httpModule.request(options, (res) => {
       let data = '';
 
       res.on('data', (chunk) => {

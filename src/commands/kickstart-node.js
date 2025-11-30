@@ -14,8 +14,9 @@ const {
   ensurePortAvailable,
   print
 } = require('../utils');
+const { GITHUB_REPOS } = require('../config');
 
-const REPO_URL = 'https://github.com/Xalantico/lexia-starter-kit-node-v1';
+const REPO_URL = GITHUB_REPOS.NODE_STARTER;
 
 /**
  * Check all prerequisites for Node.js

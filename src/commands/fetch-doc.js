@@ -9,11 +9,12 @@ const chalk = require('chalk');
 const inquirer = require('inquirer');
 const ora = require('ora');
 const https = require('https');
+const { DOCS_URLS } = require('../config');
 
-// Documentation URLs
-const DOCS_URLS = {
-  python: 'https://raw.githubusercontent.com/Lexia-Platform/lexia-pip/main/LEXIA_USAGE_GUIDE.md',
-  nodejs: 'https://raw.githubusercontent.com/Lexia-Platform/lexia-npm/main/LEXIA_USAGE_GUIDE.md'
+// Map project types to config keys
+const DOCS_MAP = {
+  python: DOCS_URLS.PYTHON,
+  nodejs: DOCS_URLS.NODEJS
 };
 
 /**
@@ -137,7 +138,7 @@ async function downloadDocumentation(type) {
     const fileName = type === 'python' ? 'LEXIA_PYTHON_SDK.md' : 'LEXIA_NODEJS_SDK.md';
     const filePath = path.join(docsPath, fileName);
     
-    await downloadFile(DOCS_URLS[type], filePath);
+    await downloadFile(DOCS_MAP[type], filePath);
     
     spinner.succeed(chalk.green('Documentation downloaded successfully!'));
     

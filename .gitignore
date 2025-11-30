@@ -47,3 +47,8 @@ temp/
 coverage/
 .nyc_output/
 
+#local
+docs/
+
+#example
+examples/

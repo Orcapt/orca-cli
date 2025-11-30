@@ -19,8 +19,9 @@ const {
   ensurePortAvailable,
   print
 } = require('../utils');
+const { GITHUB_REPOS } = require('../config');
 
-const REPO_URL = 'https://github.com/Xalantico/lexia-starter-kit-python-v1';
+const REPO_URL = GITHUB_REPOS.PYTHON_STARTER;
 
 /**
  * Check all prerequisites

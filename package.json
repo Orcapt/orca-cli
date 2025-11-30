@@ -7,7 +7,13 @@
     "lexia": "bin/lexia.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node bin/lexia.js",
+    "link": "npm link",
+    "unlink": "npm unlink -g @lexia/cli",
+    "dev:help": "node bin/lexia.js --help",
+    "dev:login": "node bin/lexia.js login",
+    "dev:db": "node bin/lexia.js db list"
   },
   "keywords": [
     "lexia",

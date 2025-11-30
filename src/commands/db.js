@@ -8,9 +8,7 @@ const ora = require('ora');
 const https = require('https');
 const http = require('http');
 const { getCredentials } = require('./login');
-
-// Default API URL - can be overridden with environment variable
-const API_BASE_URL = process.env.LEXIA_API_URL || 'http://localhost:8000';
+const { API_BASE_URL, API_ENDPOINTS } = require('../config');
 
 /**
  * Make API request to Lexia Deploy API
@@ -85,7 +83,7 @@ async function dbCreate(options) {
 
   try {
     // Hybrid DB API endpoint: creates/uses workspace DB and creates a schema
-    const response = await makeApiRequest('POST', '/api/v1/db/create', credentials);
+    const response = await makeApiRequest('POST', API_ENDPOINTS.DB_CREATE, credentials);
 
     spinner.succeed(chalk.green('Database created successfully!'));
 
@@ -145,7 +143,7 @@ async function dbList() {
 
   try {
     // DB API endpoint (returns list of { database_name, schema_name })
-    const response = await makeApiRequest('GET', '/api/v1/db/list', credentials);
+    const response = await makeApiRequest('GET', API_ENDPOINTS.DB_LIST, credentials);
 
     spinner.succeed(chalk.green('Databases retrieved'));
 
@@ -212,7 +210,7 @@ async function dbRemove(databaseName) {
 
   try {
     // Delete a single schema under the workspace database
-    const response = await makeApiRequest('DELETE', `/api/v1/db/delete-schema/${databaseName}`, credentials);
+    const response = await makeApiRequest('DELETE', `${API_ENDPOINTS.DB_DELETE}/${databaseName}`, credentials);
 
     spinner.succeed(chalk.green('Database deleted successfully!'));
 
