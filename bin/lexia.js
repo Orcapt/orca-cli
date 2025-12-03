@@ -334,7 +334,7 @@ program
   .option('--image <image>', 'Docker image (registry/image:tag)')
   .option('--memory <mb>', 'Memory in MB', '512')
   .option('--timeout <seconds>', 'Timeout in seconds', '30')
-  .option('--env <key=value>', 'Environment variable (can be repeated)', [])
+  .option('--env <key=value>', 'Environment variable (can be repeated)', (val, memo) => { memo.push(val); return memo; }, [])
   .option('--env-file <path>', 'Path to .env file')
   .action((functionName, options) => {
     requireAuth('ship');

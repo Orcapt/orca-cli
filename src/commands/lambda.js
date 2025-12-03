@@ -152,7 +152,10 @@ async function lambdaDeploy(functionName, options = {}) {
   console.log(chalk.white('Timeout:   '), chalk.yellow(`${options.timeout || 30}s`));
   console.log(chalk.white('Workspace: '), chalk.yellow(credentials.workspace));
   if (Object.keys(environmentVars).length > 0) {
-    console.log(chalk.white('Env Vars:  '), chalk.yellow(Object.keys(environmentVars).length + ' variables'));
+    console.log(chalk.white('Env Vars:'));
+    Object.entries(environmentVars).forEach(([key, value]) => {
+      console.log(chalk.gray('           '), chalk.cyan(key) + chalk.gray('=') + chalk.yellow(value));
+    });
   }
   console.log();
 
@@ -275,6 +278,12 @@ async function lambdaDeploy(functionName, options = {}) {
       console.log(chalk.white('  lexia lambda invoke'), chalk.cyan(functionName));
     }
 
+    if (confirmResponse.sqs_queue_url) {
+      console.log(chalk.cyan('\nSQS Queue (for async processing):'));
+      console.log(chalk.white('  '), chalk.yellow(confirmResponse.sqs_queue_url));
+      console.log(chalk.gray('  Note: SQS_QUEUE_URL is automatically set as an env variable'));
+    }
+
     console.log(chalk.cyan('\n============================================================\n'));
 
   } catch (error) {
@@ -335,6 +344,9 @@ async function lambdaList() {
         console.log(chalk.gray(`     Timeout: ${func.timeout_seconds}s`));
         if (func.invoke_url) {
           console.log(chalk.gray(`     URL:     ${func.invoke_url}`));
+        }
+        if (func.sqs_queue_url) {
+          console.log(chalk.gray(`     SQS:     ${func.sqs_queue_url}`));
         }
         if (func.deployed_at) {
           console.log(chalk.gray(`     Deployed: ${new Date(func.deployed_at).toLocaleString()}`));
