@@ -1,6 +1,6 @@
 /**
- * Lexia UI Commands
- * Manage Lexia UI installation and execution
+ * Orca UI Commands
+ * Manage Orca UI installation and execution
  */
 
 const chalk = require('chalk');
@@ -12,7 +12,7 @@ const os = require('os');
 const { ensurePortAvailable } = require('../utils');
 
 // Track UI installation status
-const UI_CONFIG_FILE = path.join(os.homedir(), '.lexia', 'ui-config.json');
+const UI_CONFIG_FILE = path.join(os.homedir(), '.orca', 'ui-config.json');
 
 /**
  * Check if npx is available (we'll use npx instead of global install to avoid conflicts)
@@ -35,13 +35,13 @@ function isNpxAvailable() {
  */
 function isUICached() {
   try {
-    const result = spawn.sync('npm', ['list', '@lexia/ui', '--depth=0'], {
+    const result = spawn.sync('npm', ['list', '@orca/ui', '--depth=0'], {
       encoding: 'utf8',
       stdio: 'pipe',
       cwd: os.homedir()
     });
     
-    return result.stdout.includes('@lexia/ui');
+    return result.stdout.includes('@orca/ui');
   } catch (error) {
     return false;
   }
@@ -76,56 +76,56 @@ function saveUIConfig(installed = true) {
  */
 function isUIInstalled() {
   try {
-    const result = spawn.sync('npm', ['list', '-g', '@lexia/ui', '--depth=0'], {
+    const result = spawn.sync('npm', ['list', '-g', '@orca/ui', '--depth=0'], {
       encoding: 'utf8',
       stdio: 'pipe'
     });
     
-    return result.status === 0 && result.stdout.includes('@lexia/ui');
+    return result.status === 0 && result.stdout.includes('@orca/ui');
   } catch (error) {
     return false;
   }
 }
 
 /**
- * UI Init Command - Install Lexia UI globally
+ * UI Init Command - Install Orca UI globally
  */
 async function uiInit() {
   console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('📦 Lexia UI - Global Installation'));
+  console.log(chalk.cyan('📦 Orca UI - Global Installation'));
   console.log(chalk.cyan('============================================================\n'));
 
   // Check if already installed
   if (isUIInstalled()) {
-    console.log(chalk.yellow('⚠ Lexia UI is already installed globally'));
-    console.log(chalk.cyan('\nTo reinstall, run:'), chalk.white('lexia ui remove'), chalk.cyan('first\n'));
+    console.log(chalk.yellow('⚠ Orca UI is already installed globally'));
+    console.log(chalk.cyan('\nTo reinstall, run:'), chalk.white('orca ui remove'), chalk.cyan('first\n'));
     return;
   }
 
-  const spinner = ora('Installing @lexia/ui globally...').start();
+  const spinner = ora('Installing @orca/ui globally...').start();
 
   try {
-    const result = spawn.sync('npm', ['install', '-g', '@lexia/ui'], {
+    const result = spawn.sync('npm', ['install', '-g', '@orca/ui'], {
       encoding: 'utf8',
       stdio: 'inherit'
     });
 
     if (result.status === 0) {
-      spinner.succeed(chalk.green('Lexia UI installed successfully!'));
+      spinner.succeed(chalk.green('Orca UI installed successfully!'));
       saveUIConfig(true);
       
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Installation Complete'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('\n📦 Package:'), chalk.yellow('@lexia/ui'));
+      console.log(chalk.white('\n📦 Package:'), chalk.yellow('@orca/ui'));
       console.log(chalk.white('📁 Type:'), chalk.white('React component library with built UI'));
       console.log(chalk.white('\nYou can now run:'));
-      console.log(chalk.yellow('  • lexia ui start --port 3000 --agent-port 5001'));
+      console.log(chalk.yellow('  • orca ui start --port 3000 --agent-port 5001'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       spinner.fail(chalk.red('Installation failed'));
-      console.log(chalk.red('\n✗ Failed to install @lexia/ui'));
-      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm install -g @lexia/ui\n'));
+      console.log(chalk.red('\n✗ Failed to install @orca/ui'));
+      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm install -g @orca/ui\n'));
       process.exit(1);
     }
   } catch (error) {
@@ -136,27 +136,27 @@ async function uiInit() {
 }
 
 /**
- * UI Start Command - Run the Lexia UI
+ * UI Start Command - Run the Orca UI
  */
 async function uiStart(options) {
   const port = options.port || '3000';
   const agentPort = options.agentPort || '5001';
 
   console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('🚀 Starting Lexia UI'));
+  console.log(chalk.cyan('🚀 Starting Orca UI'));
   console.log(chalk.cyan('============================================================\n'));
 
   const isInstalled = isUIInstalled();
   
   if (!isInstalled && !isNpxAvailable()) {
-    console.log(chalk.red('✗ Lexia UI is not installed and npx is not available'));
-    console.log(chalk.yellow('\nPlease run:'), chalk.white('lexia ui init'), chalk.yellow('to install\n'));
+    console.log(chalk.red('✗ Orca UI is not installed and npx is not available'));
+    console.log(chalk.yellow('\nPlease run:'), chalk.white('orca ui init'), chalk.yellow('to install\n'));
     process.exit(1);
   }
 
   console.log(chalk.white('Frontend:'), chalk.yellow(`http://localhost:${port}`));
   console.log(chalk.white('Backend: '), chalk.yellow(`http://localhost:${agentPort}`));
-  console.log(chalk.green('\n✓ Serving @lexia/ui from global installation'));
+  console.log(chalk.green('\n✓ Serving @orca/ui from global installation'));
   console.log(chalk.gray(`   Configure your agent endpoint in the UI settings`));
   
   console.log(chalk.cyan('\n⚠ Press Ctrl+C to stop the UI\n'));
@@ -168,7 +168,7 @@ async function uiStart(options) {
     
     let uiProcess;
     
-    // Find the path to the installed @lexia/ui package
+    // Find the path to the installed @orca/ui package
     let uiDistPath;
     
     if (isInstalled) {
@@ -180,19 +180,19 @@ async function uiStart(options) {
       
       if (result.status === 0) {
         const globalModulesPath = result.stdout.trim();
-        uiDistPath = path.join(globalModulesPath, '@lexia', 'ui', 'dist');
+        uiDistPath = path.join(globalModulesPath, '@orca', 'ui', 'dist');
         
         if (!fs.existsSync(uiDistPath)) {
-          console.log(chalk.red(`\n✗ @lexia/ui is installed but dist folder not found at: ${uiDistPath}`));
-          console.log(chalk.yellow('\nTry reinstalling:'), chalk.white('lexia ui remove && lexia ui init\n'));
+          console.log(chalk.red(`\n✗ @orca/ui is installed but dist folder not found at: ${uiDistPath}`));
+          console.log(chalk.yellow('\nTry reinstalling:'), chalk.white('orca ui remove && orca ui init\n'));
           process.exit(1);
         }
       }
     }
     
     if (!uiDistPath) {
-      console.log(chalk.red('\n✗ Could not find @lexia/ui installation'));
-      console.log(chalk.yellow('\nPlease run:'), chalk.white('lexia ui init\n'));
+      console.log(chalk.red('\n✗ Could not find @orca/ui installation'));
+      console.log(chalk.yellow('\nPlease run:'), chalk.white('orca ui init\n'));
       process.exit(1);
     }
     
@@ -221,7 +221,7 @@ async function uiStart(options) {
     // Handle Ctrl+C gracefully
     process.on('SIGINT', () => {
       console.log(chalk.cyan('\n\n============================================================'));
-      console.log(chalk.yellow('⚠ Stopping Lexia UI...'));
+      console.log(chalk.yellow('⚠ Stopping Orca UI...'));
       console.log(chalk.cyan('============================================================\n'));
       uiProcess.kill('SIGINT');
       process.exit(0);
@@ -234,41 +234,41 @@ async function uiStart(options) {
 }
 
 /**
- * UI Remove Command - Uninstall Lexia UI
+ * UI Remove Command - Uninstall Orca UI
  */
 async function uiRemove() {
   console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('🗑️  Removing Lexia UI'));
+  console.log(chalk.cyan('🗑️  Removing Orca UI'));
   console.log(chalk.cyan('============================================================\n'));
 
   // Check if installed
   if (!isUIInstalled()) {
-    console.log(chalk.yellow('⚠ Lexia UI is not installed globally\n'));
+    console.log(chalk.yellow('⚠ Orca UI is not installed globally\n'));
     return;
   }
 
-  const spinner = ora('Uninstalling @lexia/ui...').start();
+  const spinner = ora('Uninstalling @orca/ui...').start();
 
   try {
-    const result = spawn.sync('npm', ['uninstall', '-g', '@lexia/ui'], {
+    const result = spawn.sync('npm', ['uninstall', '-g', '@orca/ui'], {
       encoding: 'utf8',
       stdio: 'inherit'
     });
 
     if (result.status === 0) {
-      spinner.succeed(chalk.green('Lexia UI removed successfully!'));
+      spinner.succeed(chalk.green('Orca UI removed successfully!'));
       saveUIConfig(false);
       
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Uninstallation Complete'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('\n@lexia/ui package has been removed.'));
-      console.log(chalk.white('\nTo reinstall, run:'), chalk.yellow('lexia ui init'));
+      console.log(chalk.white('\n@orca/ui package has been removed.'));
+      console.log(chalk.white('\nTo reinstall, run:'), chalk.yellow('orca ui init'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       spinner.fail(chalk.red('Uninstallation failed'));
-      console.log(chalk.red('\n✗ Failed to remove @lexia/ui'));
-      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm uninstall -g @lexia/ui\n'));
+      console.log(chalk.red('\n✗ Failed to remove @orca/ui'));
+      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm uninstall -g @orca/ui\n'));
       process.exit(1);
     }
   } catch (error) {

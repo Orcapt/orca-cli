@@ -1,5 +1,5 @@
 /**
- * Lexia Lambda Commands
+ * Orca Lambda Commands
  * Deploy and manage Docker images on AWS Lambda
  */
 
@@ -19,7 +19,7 @@ const {
 } = require('../utils/docker-helper');
 
 /**
- * Make API request to Lexia Deploy API
+ * Make API request to Orca Deploy API
  */
 function makeApiRequest(method, endpoint, credentials, body = null) {
   return new Promise((resolve, reject) => {
@@ -80,7 +80,7 @@ function requireAuth() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('\n✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('lexia login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
     process.exit(1);
   }
   return credentials;
@@ -98,7 +98,7 @@ async function lambdaDeploy(functionName, options = {}) {
 
   if (!options.image) {
     console.log(chalk.red('✗ Docker image is required'));
-    console.log(chalk.cyan('Usage:'), chalk.white('lexia lambda deploy <function-name> --image <docker-image>\n'));
+    console.log(chalk.cyan('Usage:'), chalk.white('orca lambda deploy <function-name> --image <docker-image>\n'));
     process.exit(1);
   }
 
@@ -207,7 +207,7 @@ async function lambdaDeploy(functionName, options = {}) {
       console.log();
       console.log(chalk.yellow('💡 Troubleshooting tips:'));
       console.log(chalk.white('  1. Check if backend is running'));
-      console.log(chalk.white('  2. Verify your authentication: lexia whoami'));
+      console.log(chalk.white('  2. Verify your authentication: orca whoami'));
       console.log(chalk.white('  3. Check backend logs for errors'));
       console.log(chalk.white('  4. Ensure AWS credentials are configured in backend .env'));
       console.log();
@@ -276,7 +276,7 @@ async function lambdaDeploy(functionName, options = {}) {
       console.log(chalk.white('  '), chalk.yellow(confirmResponse.invoke_url));
       console.log(chalk.cyan('\nTry it:'));
       console.log(chalk.white('  curl'), chalk.cyan(confirmResponse.invoke_url));
-      console.log(chalk.white('  lexia lambda invoke'), chalk.cyan(functionName));
+      console.log(chalk.white('  orca lambda invoke'), chalk.cyan(functionName));
     }
 
     if (confirmResponse.sqs_queue_url) {
@@ -292,14 +292,14 @@ async function lambdaDeploy(functionName, options = {}) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('Endpoint not found'));
       console.log(chalk.yellow('The Lambda API may not be implemented yet.'));
       console.log(chalk.cyan('See STORAGE_LAMBDA_ARCHITECTURE.md for details\n'));
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`Error: ${error.message}\n`));
@@ -332,7 +332,7 @@ async function lambdaList() {
     
     if (response.count === 0) {
       console.log(chalk.yellow('No Lambda functions found'));
-      console.log(chalk.cyan('\nCreate one with:'), chalk.white('lexia lambda deploy <function-name> --image <docker-image>'));
+      console.log(chalk.cyan('\nCreate one with:'), chalk.white('orca lambda deploy <function-name> --image <docker-image>'));
     } else {
       console.log(chalk.green(`✓ Found ${response.count} function${response.count > 1 ? 's' : ''}`));
       console.log(chalk.cyan('============================================================\n'));
@@ -363,13 +363,13 @@ async function lambdaList() {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('\n✗ Endpoint not found'));
       console.log(chalk.yellow('The Lambda API may not be implemented yet.\n'));
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`\n✗ ${error.message}\n`));
@@ -442,7 +442,7 @@ async function lambdaInvoke(functionName, options = {}) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('\n✗ Function not found'));
       console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
@@ -454,7 +454,7 @@ async function lambdaInvoke(functionName, options = {}) {
       console.log();
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`\n✗ ${error.message}\n`));
@@ -501,7 +501,7 @@ async function lambdaLogs(functionName, options = {}) {
     if (!response.logs || response.logs.length === 0) {
       console.log(chalk.yellow('No logs found'));
       console.log(chalk.cyan('\nTry invoking the function first:'));
-      console.log(chalk.white('  lexia lambda invoke'), chalk.cyan(functionName));
+      console.log(chalk.white('  orca lambda invoke'), chalk.cyan(functionName));
     } else {
       console.log(chalk.green(`✓ Found ${response.logs.length} log entries`));
       console.log(chalk.cyan('============================================================\n'));
@@ -537,13 +537,13 @@ async function lambdaLogs(functionName, options = {}) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('\n✗ Function not found'));
       console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`\n✗ ${error.message}\n`));
@@ -598,7 +598,7 @@ async function lambdaRemove(functionName) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('\n✗ Function not found'));
       console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
@@ -607,7 +607,7 @@ async function lambdaRemove(functionName) {
       console.log(chalk.yellow('Function may be currently in use. Please try again later.\n'));
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`\n✗ ${error.message}\n`));
@@ -698,10 +698,10 @@ async function lambdaInfo(functionName) {
 
     console.log(chalk.cyan('\n============================================================'));
     console.log(chalk.gray('\nCommands:'));
-    console.log(chalk.white('  Invoke:  '), chalk.cyan(`lexia lambda invoke ${functionName}`));
-    console.log(chalk.white('  Logs:    '), chalk.cyan(`lexia lambda logs ${functionName}`));
-    console.log(chalk.white('  Update:  '), chalk.cyan(`lexia lambda update ${functionName} --image new-image:tag`));
-    console.log(chalk.white('  Remove:  '), chalk.cyan(`lexia lambda remove ${functionName}`));
+    console.log(chalk.white('  Invoke:  '), chalk.cyan(`orca lambda invoke ${functionName}`));
+    console.log(chalk.white('  Logs:    '), chalk.cyan(`orca lambda logs ${functionName}`));
+    console.log(chalk.white('  Update:  '), chalk.cyan(`orca lambda update ${functionName} --image new-image:tag`));
+    console.log(chalk.white('  Remove:  '), chalk.cyan(`orca lambda remove ${functionName}`));
     console.log();
 
   } catch (error) {
@@ -709,13 +709,13 @@ async function lambdaInfo(functionName) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('lexia login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red('\n✗ Function not found'));
       console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
     } else if (error.code === 'ECONNREFUSED') {
       console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Lexia API:'), chalk.white(API_BASE_URL));
+      console.log(chalk.yellow('Cannot connect to Orca API:'), chalk.white(API_BASE_URL));
       console.log(chalk.cyan('Make sure the backend is running.\n'));
     } else {
       console.log(chalk.red(`\n✗ ${error.message}\n`));

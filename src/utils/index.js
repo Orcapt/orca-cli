@@ -1,5 +1,5 @@
 /**
- * Utility functions for Lexia CLI
+ * Utility functions for Orca CLI
  */
 
 const { spawn } = require('cross-spawn');
@@ -49,9 +49,9 @@ function getVenvPaths() {
   const isWindows = process.platform === 'win32';
   
   return {
-    python: isWindows ? 'lexia_env\\Scripts\\python.exe' : 'lexia_env/bin/python',
-    pip: isWindows ? 'lexia_env\\Scripts\\pip.exe' : 'lexia_env/bin/pip',
-    activate: isWindows ? 'lexia_env\\Scripts\\activate' : 'source lexia_env/bin/activate'
+    python: isWindows ? 'orca_env\\Scripts\\python.exe' : 'orca_env/bin/python',
+    pip: isWindows ? 'orca_env\\Scripts\\pip.exe' : 'orca_env/bin/pip',
+    activate: isWindows ? 'orca_env\\Scripts\\activate' : 'source orca_env/bin/activate'
   };
 }
 

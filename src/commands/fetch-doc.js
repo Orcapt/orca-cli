@@ -1,6 +1,6 @@
 /**
  * Fetch Documentation Command
- * Downloads Lexia SDK documentation based on project type
+ * Downloads Orca SDK documentation based on project type
  */
 
 const fs = require('fs').promises;
@@ -131,11 +131,11 @@ async function ensureDocsDirectory() {
  * @returns {Promise<void>}
  */
 async function downloadDocumentation(type) {
-  const spinner = ora(`Downloading Lexia ${type === 'python' ? 'Python' : 'Node.js'} SDK documentation...`).start();
+  const spinner = ora(`Downloading Orca ${type === 'python' ? 'Python' : 'Node.js'} SDK documentation...`).start();
   
   try {
     const docsPath = await ensureDocsDirectory();
-    const fileName = type === 'python' ? 'LEXIA_PYTHON_SDK.md' : 'LEXIA_NODEJS_SDK.md';
+    const fileName = type === 'python' ? 'ORCA_PYTHON_SDK.md' : 'ORCA_NODEJS_SDK.md';
     const filePath = path.join(docsPath, fileName);
     
     await downloadFile(DOCS_MAP[type], filePath);
@@ -163,7 +163,7 @@ async function downloadDocumentation(type) {
 async function fetchDoc() {
   try {
     console.log(chalk.cyan('\n============================================================'));
-    console.log(chalk.cyan('📚 Lexia - Fetch Documentation'));
+    console.log(chalk.cyan('📚 Orca - Fetch Documentation'));
     console.log(chalk.cyan('============================================================\n'));
     
     // Check if we're in a project root

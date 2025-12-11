@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Lexia CLI - Command Line Interface
- * Entry point for the Lexia CLI tool
+ * Orca CLI - Command Line Interface
+ * Entry point for the Orca CLI tool
  */
 
 const { program } = require('commander');
@@ -35,15 +35,15 @@ const packageJson = JSON.parse(
 );
 
 program
-  .name('lexia')
-  .description('CLI tool for managing Lexia projects')
+  .name('orca')
+  .description('CLI tool for managing Orca projects')
   .version(packageJson.version);
 
 // Middleware to check if user is logged in
 function requireAuth(commandName) {
   if (!isLoggedIn()) {
     console.log(chalk.red('\n✗ You must be logged in to use this command'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('lexia login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
     process.exit(1);
   }
 }
@@ -51,7 +51,7 @@ function requireAuth(commandName) {
 // Login command
 program
   .command('login')
-  .description('Authenticate with Lexia')
+  .description('Authenticate with Orca')
   .action(login);
 
 // Logout command
@@ -82,18 +82,18 @@ program
       console.log(chalk.cyan('============================================================\n'));
     } else {
       console.log(chalk.red('\n✗ Not authenticated'));
-      console.log(chalk.cyan('Run:'), chalk.yellow('lexia login'), chalk.cyan('to authenticate\n'));
+      console.log(chalk.cyan('Run:'), chalk.yellow('orca login'), chalk.cyan('to authenticate\n'));
     }
   });
 
 // UI commands
 const uiCmd = program
   .command('ui')
-  .description('Manage Lexia UI installation and execution');
+  .description('Manage Orca UI installation and execution');
 
 uiCmd
   .command('init')
-  .description('Install Lexia UI globally')
+  .description('Install Orca UI globally')
   .action(() => {
     requireAuth('ui init');
     uiInit();
@@ -101,7 +101,7 @@ uiCmd
 
 uiCmd
   .command('start')
-  .description('Start the Lexia UI')
+  .description('Start the Orca UI')
   .option('-p, --port <number>', 'Port for the frontend UI', '3000')
   .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
   .action((options) => {
@@ -111,7 +111,7 @@ uiCmd
 
 uiCmd
   .command('remove')
-  .description('Uninstall Lexia UI')
+  .description('Uninstall Orca UI')
   .action(() => {
     requireAuth('ui remove');
     uiRemove();
@@ -150,27 +150,27 @@ dbCmd
 // Kickstart command with subcommands for different languages
 const kickstartCmd = program
   .command('kickstart')
-  .description('Quick setup for a new Lexia project')
+  .description('Quick setup for a new Orca project')
   .action(() => {
     requireAuth('kickstart');
-    console.log(chalk.cyan('\n📚 Usage:'), chalk.white('lexia kickstart <language> [options]\n'));
+    console.log(chalk.cyan('\n📚 Usage:'), chalk.white('orca kickstart <language> [options]\n'));
     console.log(chalk.cyan('Available languages:\n'));
     console.log(chalk.green('  python'), '  - Python-based agent (FastAPI + OpenAI)', chalk.green('✓ Available'));
     console.log(chalk.green('  node'), '    - Node.js-based agent (Express + OpenAI)', chalk.green('✓ Available'));
     console.log(chalk.yellow('  go'), '      - Go-based agent', chalk.yellow('🚧 Coming soon'));
     console.log();
     console.log(chalk.cyan('Examples:'));
-    console.log(chalk.white('  lexia kickstart python'));
-    console.log(chalk.white('  lexia kickstart node'));
+    console.log(chalk.white('  orca kickstart python'));
+    console.log(chalk.white('  orca kickstart node'));
     console.log();
-    console.log(chalk.cyan('Help:'), chalk.white('lexia kickstart <language> --help\n'));
+    console.log(chalk.cyan('Help:'), chalk.white('orca kickstart <language> --help\n'));
   });
 
 // Python starter kit
 kickstartCmd
   .command('python')
-  .description('Set up a Python-based Lexia agent (FastAPI + OpenAI)')
-  .option('-d, --directory <name>', 'Directory name for the project', 'lexia-kickstart')
+  .description('Set up a Python-based Orca agent (FastAPI + OpenAI)')
+  .option('-d, --directory <name>', 'Directory name for the project', 'orca-kickstart')
   .option('-p, --port <number>', 'Port for the frontend UI', '3000')
   .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
   .option('--no-start', 'Skip starting the servers after setup')
@@ -182,8 +182,8 @@ kickstartCmd
 // Node.js starter kit
 kickstartCmd
   .command('node')
-  .description('Set up a Node.js-based Lexia agent (Express + OpenAI)')
-  .option('-d, --directory <name>', 'Directory name for the project', 'lexia-kickstart')
+  .description('Set up a Node.js-based Orca agent (Express + OpenAI)')
+  .option('-d, --directory <name>', 'Directory name for the project', 'orca-kickstart')
   .option('-p, --port <number>', 'Port for the frontend UI', '3000')
   .option('-a, --agent-port <number>', 'Port for the agent backend', '5001')
   .option('--no-start', 'Skip starting the servers after setup')
@@ -194,10 +194,10 @@ kickstartCmd
 
 kickstartCmd
   .command('go')
-  .description('Set up a Go-based Lexia agent (Coming soon)')
+  .description('Set up a Go-based Orca agent (Coming soon)')
   .action(() => {
     console.log(chalk.yellow('\n⚠ Go starter kit is coming soon!'));
-    console.log(chalk.cyan('For now, use:'), chalk.white('lexia kickstart python\n'));
+    console.log(chalk.cyan('For now, use:'), chalk.white('orca kickstart python\n'));
   });
 
 // Fetch commands
@@ -207,7 +207,7 @@ const fetchCmd = program
 
 fetchCmd
   .command('doc')
-  .description('Download Lexia SDK documentation')
+  .description('Download Orca SDK documentation')
   .action(fetchDoc);
 
 // Storage commands
@@ -392,7 +392,7 @@ lambdaCmd
 // Handle unknown commands
 program.on('command:*', () => {
   console.error(chalk.red(`\n✗ Invalid command: ${program.args.join(' ')}\n`));
-  console.log(chalk.cyan('Run'), chalk.yellow('lexia --help'), chalk.cyan('to see available commands\n'));
+  console.log(chalk.cyan('Run'), chalk.yellow('orca --help'), chalk.cyan('to see available commands\n'));
   process.exit(1);
 });
 

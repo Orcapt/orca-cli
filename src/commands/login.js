@@ -1,5 +1,5 @@
 /**
- * Lexia Login Command
+ * Orca Login Command
  * Authenticates users before using kickstart commands
  */
 
@@ -14,7 +14,7 @@ const http = require('http');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
 
 // Config file location in user's home directory
-const CONFIG_DIR = path.join(os.homedir(), '.lexia');
+const CONFIG_DIR = path.join(os.homedir(), '.orca');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 /**
@@ -83,7 +83,7 @@ function authenticate(mode, workspace, token) {
  */
 function saveCredentials(mode, workspace, token) {
   try {
-    // Create .lexia directory if it doesn't exist
+    // Create .orca directory if it doesn't exist
     if (!fs.existsSync(CONFIG_DIR)) {
       fs.mkdirSync(CONFIG_DIR, { recursive: true });
     }
@@ -109,7 +109,7 @@ function saveCredentials(mode, workspace, token) {
  */
 async function login() {
   console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('🔐 Lexia Login'));
+  console.log(chalk.cyan('🔐 Orca Login'));
   console.log(chalk.cyan('============================================================\n'));
 
   let authenticated = false;
@@ -123,7 +123,7 @@ async function login() {
         {
           type: 'list',
           name: 'mode',
-          message: 'Select your Lexia mode:',
+          message: 'Select your Orca mode:',
           choices: [
             { name: 'Sandbox/Pro mode', value: 'dev' },
             { name: 'Team mode', value: 'team' }
@@ -183,7 +183,7 @@ async function login() {
 
           if (saved) {
             console.log(chalk.green('\n✓ Credentials saved successfully'));
-            console.log(chalk.cyan('\nYou can now use:'), chalk.white('lexia kickstart <language>'));
+            console.log(chalk.cyan('\nYou can now use:'), chalk.white('orca kickstart <language>'));
             console.log(chalk.cyan('============================================================\n'));
           }
 
