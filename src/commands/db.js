@@ -27,7 +27,8 @@ function makeApiRequest(method, path, credentials) {
       headers: {
         'x-workspace': credentials.workspace,
         'x-token': credentials.token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-mode' : credentials.mode
       }
     };
 

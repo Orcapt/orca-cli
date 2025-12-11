@@ -29,7 +29,7 @@ function authenticate(mode, workspace, token) {
     const isHttps = apiUrl.protocol === 'https:';
     const httpModule = isHttps ? https : http;
     // Map legacy 'dev' selection to 'pro' for the API
-    const modeValue = mode === 'team' ? 'team' : 'pro';
+    const modeValue = mode === 'team' ? 'team' : 'dev';
 
     const postData = JSON.stringify({
       workspace,
