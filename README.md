@@ -1,10 +1,10 @@
-# @lexia/cli
+# @orca/cli
 
-> A powerful command-line tool for managing Lexia projects. Set up and run your AI agent in seconds! 🚀
+> A powerful command-line tool for managing Orca projects. Set up and run your AI agent in seconds! 🚀
 
 ## ✨ Features
 
-- 🎯 **One Command Setup** - Clone, configure, and run with `lexia kickstart <language>`
+- 🎯 **One Command Setup** - Clone, configure, and run with `orca kickstart <language>`
 - 🌐 **Multi-Language Support** - Python ✅ | Node.js ✅ | Go (coming soon)
 - 🖥️ **Cross-Platform** - Works on Windows, Linux, and macOS
 - 📦 **No Dependencies** - Just Node.js (which you already have!)
@@ -19,7 +19,7 @@
 
 ### Latest Features (v2.0)
 
-- 🚀 **`lexia ship`** - Deploy Docker images to AWS Lambda in one command!
+- 🚀 **`orca ship`** - Deploy Docker images to AWS Lambda in one command!
 - 📊 **Real-time Progress Bar** - See exactly how much of your image has been pushed
 - 🔐 **Environment Variables** - Support for `.env` files and `--env` flags
 - 💾 **Storage Management** - Full S3-compatible storage with buckets, files, and permissions
@@ -34,18 +34,18 @@
 
 ```bash
 # Install globally via npm
-npm install -g @lexia/cli
+npm install -g @orca/cli
 
 # Or use it directly with npx (no installation needed)
-npx @lexia/cli kickstart python
+npx @orca/cli kickstart python
 ```
 
 ### Install from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/Xalantico/lexia-cli
-cd lexia-cli
+git clone https://github.com/Orcapt/orca-cli
+cd orca-cli
 
 # Install dependencies
 npm install
@@ -67,25 +67,25 @@ Make sure you have these installed:
 
 ### Authentication
 
-First, authenticate with Lexia:
+First, authenticate with Orca:
 
 ```bash
-lexia login
+orca login
 ```
 
 ### Usage
 
-Create and run a new Lexia Python agent in one command:
+Create and run a new Orca Python agent in one command:
 
 ```bash
-lexia kickstart python
+orca kickstart python
 ```
 
 That's it! This will:
 
 1. ✅ Check prerequisites (Python, Git, Node.js)
-2. 📁 Create `lexia-kickstart` directory
-3. 📦 Clone the [starter kit](https://github.com/Xalantico/lexia-starter-kit-python-v1)
+2. 📁 Create `orca-kickstart` directory
+3. 📦 Clone the [starter kit](https://github.com/Orcapt/orca-starter-kit-python-v1)
 4. 🐍 Set up Python virtual environment
 5. 📥 Install all dependencies
 6. 🚀 Start backend (port 5001)
@@ -95,35 +95,35 @@ That's it! This will:
 
 ### Authentication Commands
 
-#### `lexia login`
+#### `orca login`
 
-Authenticate with Lexia platform.
+Authenticate with Orca platform.
 
 ```bash
-lexia login
+orca login
 ```
 
-#### `lexia logout`
+#### `orca logout`
 
 Clear stored credentials.
 
 ```bash
-lexia logout
+orca logout
 ```
 
-#### `lexia status`
+#### `orca status`
 
 Check authentication status and workspace info.
 
 ```bash
-lexia status
+orca status
 ```
 
 ---
 
-### `lexia kickstart <language>`
+### `orca kickstart <language>`
 
-Quick setup for a new Lexia project in your preferred language.
+Quick setup for a new Orca project in your preferred language.
 
 #### Available Languages:
 
@@ -131,14 +131,14 @@ Quick setup for a new Lexia project in your preferred language.
 - **`node`** - Node.js-based agent (Express + OpenAI) ✅ Available now
 - **`go`** - Go-based agent 🚧 Coming soon
 
-#### `lexia kickstart python`
+#### `orca kickstart python`
 
-Set up a Python-based Lexia agent with FastAPI and OpenAI.
+Set up a Python-based Orca agent with FastAPI and OpenAI.
 
 **Options:**
 
 ```bash
--d, --directory <name>      Directory name (default: "lexia-kickstart")
+-d, --directory <name>      Directory name (default: "orca-kickstart")
 -p, --port <number>         Frontend port (default: 3000)
 -a, --agent-port <number>   Backend port (default: 5001)
 --no-start                  Skip auto-starting servers
@@ -148,24 +148,24 @@ Set up a Python-based Lexia agent with FastAPI and OpenAI.
 
 ```bash
 # Basic usage
-lexia kickstart python
+orca kickstart python
 
 # Custom directory name
-lexia kickstart python --directory my-awesome-agent
+orca kickstart python --directory my-awesome-agent
 
 # Custom ports
-lexia kickstart python --port 8080 --agent-port 8000
+orca kickstart python --port 8080 --agent-port 8000
 
 # Setup without auto-start
-lexia kickstart python --no-start
+orca kickstart python --no-start
 
 # All options combined
-lexia kickstart python -d my-agent -p 4000 -a 5000
+orca kickstart python -d my-agent -p 4000 -a 5000
 ```
 
-#### `lexia kickstart node`
+#### `orca kickstart node`
 
-Set up a Node.js-based Lexia agent with Express and OpenAI.
+Set up a Node.js-based Orca agent with Express and OpenAI.
 
 **Options:** Same as Python (see above)
 
@@ -173,35 +173,35 @@ Set up a Node.js-based Lexia agent with Express and OpenAI.
 
 ```bash
 # Basic usage
-lexia kickstart node
+orca kickstart node
 
 # Custom directory name
-lexia kickstart node --directory my-node-agent
+orca kickstart node --directory my-node-agent
 
 # Custom ports
-lexia kickstart node --port 8080 --agent-port 8000
+orca kickstart node --port 8080 --agent-port 8000
 
 # All options combined
-lexia kickstart node -d my-agent -p 4000 -a 5000
+orca kickstart node -d my-agent -p 4000 -a 5000
 ```
 
 #### Coming Soon:
 
 ```bash
 # Go agent (coming soon)
-lexia kickstart go
+orca kickstart go
 ```
 
 ---
 
-### 🚀 `lexia ship <function-name>`
+### 🚀 `orca ship <function-name>`
 
 Deploy Docker images to AWS Lambda with one command!
 
 **Syntax:**
 
 ```bash
-lexia ship <function-name> [options]
+orca ship <function-name> [options]
 ```
 
 **Options:**
@@ -216,28 +216,28 @@ lexia ship <function-name> [options]
 
 ```bash
 # Basic deployment
-lexia ship my-api --image=my-app:latest
+orca ship my-api --image=my-app:latest
 
 # With custom memory and timeout
-lexia ship my-api \
+orca ship my-api \
   --image=my-app:latest \
   --memory=1024 \
   --timeout=60
 
 # With environment variables
-lexia ship my-api \
+orca ship my-api \
   --image=my-app:latest \
   --env DATABASE_URL=postgres://... \
   --env API_KEY=secret123 \
   --env DEBUG=true
 
 # With .env file
-lexia ship my-api \
+orca ship my-api \
   --image=my-app:latest \
   --env-file=.env
 
 # Override .env with specific values
-lexia ship my-api \
+orca ship my-api \
   --image=my-app:latest \
   --env-file=.env \
   --env DEBUG=false
@@ -302,55 +302,55 @@ Try it:
 
 ### Lambda Management Commands
 
-#### `lexia lambda list`
+#### `orca lambda list`
 
 List all Lambda functions in your workspace.
 
 ```bash
-lexia lambda list
+orca lambda list
 ```
 
-#### `lexia lambda info <function-name>`
+#### `orca lambda info <function-name>`
 
 Get detailed information about a Lambda function.
 
 ```bash
-lexia lambda info my-api
+orca lambda info my-api
 ```
 
-#### `lexia lambda invoke <function-name>`
+#### `orca lambda invoke <function-name>`
 
 Invoke a Lambda function.
 
 ```bash
 # Simple invoke
-lexia lambda invoke my-api
+orca lambda invoke my-api
 
 # With JSON payload
-lexia lambda invoke my-api --payload '{"key": "value"}'
+orca lambda invoke my-api --payload '{"key": "value"}'
 ```
 
-#### `lexia lambda logs <function-name>`
+#### `orca lambda logs <function-name>`
 
 View Lambda function logs.
 
 ```bash
 # Recent logs
-lexia lambda logs my-api
+orca lambda logs my-api
 
 # Stream logs in real-time
-lexia lambda logs my-api --tail
+orca lambda logs my-api --tail
 
 # Logs from last hour
-lexia lambda logs my-api --since 1h
+orca lambda logs my-api --since 1h
 ```
 
-#### `lexia lambda remove <function-name>`
+#### `orca lambda remove <function-name>`
 
 Delete a Lambda function.
 
 ```bash
-lexia lambda remove my-api
+orca lambda remove my-api
 ```
 
 ---
@@ -363,64 +363,64 @@ Manage S3-compatible storage buckets and files.
 
 ```bash
 # Create bucket
-lexia storage bucket create my-bucket
+orca storage bucket create my-bucket
 
 # Create public bucket with versioning
-lexia storage bucket create my-bucket --public --versioning
+orca storage bucket create my-bucket --public --versioning
 
 # List all buckets
-lexia storage bucket list
+orca storage bucket list
 
 # Get bucket info
-lexia storage bucket info my-bucket
+orca storage bucket info my-bucket
 
 # Delete bucket
-lexia storage bucket delete my-bucket
+orca storage bucket delete my-bucket
 
 # Force delete (removes all files)
-lexia storage bucket delete my-bucket --force
+orca storage bucket delete my-bucket --force
 ```
 
 #### File Management
 
 ```bash
 # Upload file
-lexia storage upload my-bucket ./file.txt
+orca storage upload my-bucket ./file.txt
 
 # Upload to specific folder
-lexia storage upload my-bucket ./file.txt --folder=/documents
+orca storage upload my-bucket ./file.txt --folder=/documents
 
 # Upload as public file
-lexia storage upload my-bucket ./file.txt --public
+orca storage upload my-bucket ./file.txt --public
 
 # List files in bucket
-lexia storage files my-bucket
+orca storage files my-bucket
 
 # List files in folder
-lexia storage files my-bucket --folder=/documents
+orca storage files my-bucket --folder=/documents
 
 # Download file
-lexia storage download my-bucket file.txt
+orca storage download my-bucket file.txt
 
 # Download to specific path
-lexia storage download my-bucket file.txt ./downloads/
+orca storage download my-bucket file.txt ./downloads/
 
 # Delete file
-lexia storage delete my-bucket file.txt
+orca storage delete my-bucket file.txt
 ```
 
 #### Permission Management
 
 ```bash
 # Add permission
-lexia storage permission add my-bucket \
+orca storage permission add my-bucket \
   --target-type=user \
   --target-id=user123 \
   --read \
   --write
 
 # List permissions
-lexia storage permission list my-bucket
+orca storage permission list my-bucket
 ```
 
 ---
@@ -431,42 +431,42 @@ Create and manage PostgreSQL databases.
 
 ```bash
 # Create database
-lexia db create
+orca db create
 
 # List all databases
-lexia db list
+orca db list
 
 # Delete database
-lexia db remove my-database
+orca db remove my-database
 ```
 
 ---
 
 ### 🎨 UI Commands
 
-Manage Lexia UI installation.
+Manage Orca UI installation.
 
 ```bash
 # Install UI globally
-lexia ui init
+orca ui init
 
 # Start UI
-lexia ui start
+orca ui start
 
 # Start with custom ports
-lexia ui start --port 3000 --agent-port 5001
+orca ui start --port 3000 --agent-port 5001
 
 # Remove UI
-lexia ui remove
+orca ui remove
 ```
 
 ## 🎬 What It Looks Like
 
 ```bash
-$ lexia kickstart python
+$ orca kickstart python
 
 ============================================================
-🚀 Lexia Kickstart - Python
+🚀 Orca Kickstart - Python
 ============================================================
 
 ✓ Python found: python3
@@ -474,8 +474,8 @@ $ lexia kickstart python
 ✓ Node.js/npm found
 ✓ npx found
 
-► Creating directory: lexia-kickstart
-✓ Created directory: /path/to/lexia-kickstart
+► Creating directory: orca-kickstart
+✓ Created directory: /path/to/orca-kickstart
 
 ✓ Repository cloned successfully
 ✓ Virtual environment created
@@ -489,7 +489,7 @@ $ lexia kickstart python
 ✓ Frontend started (PID: 12346)
 
 ============================================================
-🎉 Lexia is running!
+🎉 Orca is running!
 ============================================================
 
 Frontend: http://localhost:3000
@@ -503,9 +503,9 @@ Backend:  http://localhost:5001
 ### Project Structure
 
 ```
-lexia-cli/
+orca-cli/
 ├── bin/
-│   └── lexia.js                    # CLI entry point (executable)
+│   └── orca.js                    # CLI entry point (executable)
 ├── src/
 │   ├── commands/
 │   │   ├── kickstart-python.js     # Python kickstart
@@ -539,7 +539,7 @@ async function myCommand(options) {
 module.exports = myCommand;
 ```
 
-2. Register it in `bin/lexia.js`:
+2. Register it in `bin/orca.js`:
 
 ```javascript
 const myCommand = require("../src/commands/mycommand");
@@ -582,17 +582,17 @@ program.command("mycommand").description("My custom command").action(myCommand);
 
 ```bash
 # Use a different directory name
-lexia kickstart python --directory my-other-project
+orca kickstart python --directory my-other-project
 
 # Or remove the existing directory
-rm -rf lexia-kickstart
+rm -rf orca-kickstart
 ```
 
 **"Port already in use"**
 
 ```bash
 # Use different ports
-lexia kickstart python --port 4000 --agent-port 5000
+orca kickstart python --port 4000 --agent-port 5000
 
 # Or find and kill the process using the port
 # macOS/Linux: lsof -ti:3000 | xargs kill
@@ -624,11 +624,11 @@ docker images | grep my-app
 
 ```bash
 # Check your authentication
-lexia status
+orca status
 
 # Re-login if needed
-lexia logout
-lexia login
+orca logout
+orca login
 
 # Check backend is running and AWS credentials are configured
 ```
@@ -637,7 +637,7 @@ lexia login
 
 ```bash
 # Increase timeout
-lexia ship my-api --image=my-app:latest --timeout=120
+orca ship my-api --image=my-app:latest --timeout=120
 
 # Check image size (should be < 10 GB)
 docker images | grep my-app
@@ -650,10 +650,10 @@ docker images | grep my-app
 cat .env
 
 # Test with explicit --env flags
-lexia ship my-api --image=my-app:latest --env DEBUG=true
+orca ship my-api --image=my-app:latest --env DEBUG=true
 
 # Check Lambda function info
-lexia lambda info my-api
+orca lambda info my-api
 ```
 
 ### Storage Issues
@@ -662,10 +662,10 @@ lexia lambda info my-api
 
 ```bash
 # Use a different bucket name
-lexia storage bucket create my-bucket-2
+orca storage bucket create my-bucket-2
 
 # Or delete existing bucket
-lexia storage bucket delete my-bucket --force
+orca storage bucket delete my-bucket --force
 ```
 
 **"File upload failed"**
@@ -675,23 +675,23 @@ lexia storage bucket delete my-bucket --force
 ls -lh ./file.txt
 
 # Check bucket exists
-lexia storage bucket list
+orca storage bucket list
 
 # Try with absolute path
-lexia storage upload my-bucket /full/path/to/file.txt
+orca storage upload my-bucket /full/path/to/file.txt
 ```
 
 ### Platform-Specific Notes
 
 #### Windows
 
-- Uses `lexia_env\Scripts\python.exe`
+- Uses `orca_env\Scripts\python.exe`
 - Automatically handles Windows paths
 - PowerShell and CMD supported
 
 #### macOS/Linux
 
-- Uses `lexia_env/bin/python`
+- Uses `orca_env/bin/python`
 - Bash and Zsh supported
 
 ## 📝 Manual Setup
@@ -700,22 +700,22 @@ If you prefer to set up manually:
 
 ```bash
 # After kickstart python (with --no-start)
-cd lexia-kickstart
+cd orca-kickstart
 
 # Activate virtual environment
-source lexia_env/bin/activate    # macOS/Linux
-lexia_env\Scripts\activate       # Windows
+source orca_env/bin/activate    # macOS/Linux
+orca_env\Scripts\activate       # Windows
 
 # Start backend
 python main.py --dev
 
 # In another terminal, start frontend
-npx -y @lexia/ui lexia --port=3000 --agent-port=5001
+npx -y @orca/ui orca --port=3000 --agent-port=5001
 ```
 
 ## 🌐 Multi-Language Support
 
-Lexia CLI is designed to support multiple programming languages:
+Orca CLI is designed to support multiple programming languages:
 
 ### Currently Available:
 
@@ -808,7 +808,7 @@ EOF
 docker build -t my-api:latest .
 
 # 7. Deploy to Lambda
-lexia ship my-api --image=my-api:latest --memory=1024 --timeout=60
+orca ship my-api --image=my-api:latest --memory=1024 --timeout=60
 
 # 8. Test
 curl https://YOUR-FUNCTION-URL/
@@ -825,7 +825,7 @@ DEBUG=false
 EOF
 
 # Deploy with .env
-lexia ship my-api \
+orca ship my-api \
   --image=my-api:latest \
   --env-file=.env \
   --memory=2048 \
@@ -836,20 +836,20 @@ lexia ship my-api \
 
 ```bash
 # 1. Create bucket
-lexia storage bucket create my-files --public
+orca storage bucket create my-files --public
 
 # 2. Upload files
-lexia storage upload my-files ./document.pdf
-lexia storage upload my-files ./image.png --folder=/images
+orca storage upload my-files ./document.pdf
+orca storage upload my-files ./image.png --folder=/images
 
 # 3. List files
-lexia storage files my-files
+orca storage files my-files
 
 # 4. Download file
-lexia storage download my-files document.pdf
+orca storage download my-files document.pdf
 
 # 5. Add permissions
-lexia storage permission add my-files \
+orca storage permission add my-files \
   --target-type=user \
   --target-id=user123 \
   --read --write
@@ -859,38 +859,38 @@ lexia storage permission add my-files \
 
 ```bash
 # 1. Login
-lexia login
+orca login
 
 # 2. Create database
-lexia db create
+orca db create
 
 # 3. Create storage bucket
-lexia storage bucket create app-storage
+orca storage bucket create app-storage
 
 # 4. Deploy Lambda function
-lexia ship my-app \
+orca ship my-app \
   --image=my-app:latest \
   --env DATABASE_URL=postgres://... \
   --env BUCKET_NAME=app-storage \
   --memory=1024
 
 # 5. Check deployment
-lexia lambda info my-app
+orca lambda info my-app
 
 # 6. View logs
-lexia lambda logs my-app
+orca lambda logs my-app
 
 # 7. Invoke function
-lexia lambda invoke my-app --payload '{"test": true}'
+orca lambda invoke my-app --payload '{"test": true}'
 ```
 
 ---
 
 ## 🙏 Support
 
-- 📚 [Documentation](https://github.com/Xalantico/lexia-starter-kit-python-v1)
-- 🐛 [Report Issues](https://github.com/Xalantico/lexia-cli/issues)
-- 💬 [Discussions](https://github.com/Xalantico/lexia-cli/discussions)
+- 📚 [Documentation](https://github.com/Orcapt/orca-starter-kit-python-v1)
+- 🐛 [Report Issues](https://github.com/Orcapt/orca-cli/issues)
+- 💬 [Discussions](https://github.com/Orcapt/orca-cli/discussions)
 
 ## 🎯 Roadmap
 
@@ -911,27 +911,27 @@ lexia lambda invoke my-app --payload '{"test": true}'
 #### Commands
 
 ```bash
-lexia stop            # Stop running servers
-lexia restart         # Restart servers
-lexia update          # Update Lexia packages
-lexia config          # Configure Lexia settings
-lexia logs            # View all logs
+orca stop            # Stop running servers
+orca restart         # Restart servers
+orca update          # Update Orca packages
+orca config          # Configure Orca settings
+orca logs            # View all logs
 ```
 
 #### Lambda Features
 
 ```bash
-lexia ship --auto-scale          # Auto-scaling configuration
-lexia ship --vpc                 # VPC configuration
-lexia lambda rollback            # Rollback to previous version
-lexia lambda alias               # Manage function aliases
+orca ship --auto-scale          # Auto-scaling configuration
+orca ship --vpc                 # VPC configuration
+orca lambda rollback            # Rollback to previous version
+orca lambda alias               # Manage function aliases
 ```
 
 #### Storage Features
 
 ```bash
-lexia storage sync               # Sync local folder to bucket
-lexia storage cdn                # CDN configuration
+orca storage sync               # Sync local folder to bucket
+orca storage cdn                # CDN configuration
 ```
 
 ### Language Support
@@ -944,6 +944,6 @@ lexia storage cdn                # CDN configuration
 
 ---
 
-**Made with ❤️ by the Lexia Team**
+**Made with ❤️ by the Orca Team**
 
 Star ⭐ this repo if you find it helpful!

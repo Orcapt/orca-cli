@@ -1,6 +1,6 @@
 /**
- * Lexia Storage Commands
- * Manage S3-like storage buckets and files via Lexia Deploy API
+ * Orca Storage Commands
+ * Manage S3-like storage buckets and files via Orca Deploy API
  */
 
 const chalk = require('chalk');
@@ -13,7 +13,7 @@ const { getCredentials } = require('./login');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
 
 /**
- * Make API request to Lexia Deploy API
+ * Make API request to Orca Deploy API
  */
 function makeApiRequest(method, endpoint, credentials, body = null) {
   return new Promise((resolve, reject) => {
@@ -191,7 +191,7 @@ function requireAuth() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('\n✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('lexia login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
     process.exit(1);
   }
   return credentials;
@@ -247,8 +247,8 @@ async function bucketCreate(bucketName, options = {}) {
     console.log(chalk.white('  Encryption: '), chalk.yellow(response.bucket.encryption_enabled ? 'Enabled' : 'Disabled'));
     
     console.log(chalk.cyan('\n💡 Next Steps:'));
-    console.log(chalk.white('  Upload file:  '), chalk.yellow(`lexia storage upload ${bucketName} <file-path>`));
-    console.log(chalk.white('  List files:   '), chalk.yellow(`lexia storage files ${bucketName}`));
+    console.log(chalk.white('  Upload file:  '), chalk.yellow(`orca storage upload ${bucketName} <file-path>`));
+    console.log(chalk.white('  List files:   '), chalk.yellow(`orca storage files ${bucketName}`));
     console.log('');
 
   } catch (error) {
@@ -294,7 +294,7 @@ async function bucketList() {
     if (response.count === 0) {
       console.log(chalk.yellow('\n📭 No buckets found'));
       console.log(chalk.cyan('\n💡 Create your first bucket:'));
-      console.log(chalk.white('  '), chalk.yellow('lexia storage bucket create my-bucket'));
+      console.log(chalk.white('  '), chalk.yellow('orca storage bucket create my-bucket'));
       console.log('');
       return;
     }
@@ -408,8 +408,8 @@ async function fileUpload(bucketName, localPath, options = {}) {
     }
     
     console.log(chalk.cyan('\n💡 Next Steps:'));
-    console.log(chalk.white('  List files:   '), chalk.yellow(`lexia storage files ${bucketName}`));
-    console.log(chalk.white('  Download:     '), chalk.yellow(`lexia storage download ${bucketName} ${response.file.file_key}`));
+    console.log(chalk.white('  List files:   '), chalk.yellow(`orca storage files ${bucketName}`));
+    console.log(chalk.white('  Download:     '), chalk.yellow(`orca storage download ${bucketName} ${response.file.file_key}`));
     console.log('');
 
   } catch (error) {
@@ -612,7 +612,7 @@ async function bucketDelete(bucketName, options = {}) {
       } else if (error.statusCode === 400 && error.response.file_count) {
         console.log(chalk.yellow(`  Bucket contains ${error.response.file_count} file(s)`));
         console.log(chalk.cyan('  Use --force to delete anyway:'));
-        console.log(chalk.white('  '), chalk.yellow(`lexia storage bucket delete ${bucketName} --force`));
+        console.log(chalk.white('  '), chalk.yellow(`orca storage bucket delete ${bucketName} --force`));
       }
     } else {
       console.log(chalk.red(`\n✗ ${error.message}`));
@@ -664,7 +664,7 @@ async function fileList(bucketName, options = {}) {
     if (response.pagination.total === 0) {
       console.log(chalk.yellow('\n📭 No files found'));
       console.log(chalk.cyan('\n💡 Upload a file:'));
-      console.log(chalk.white('  '), chalk.yellow(`lexia storage upload ${bucketName} <file-path>`));
+      console.log(chalk.white('  '), chalk.yellow(`orca storage upload ${bucketName} <file-path>`));
       console.log('');
       return;
     }
@@ -705,7 +705,7 @@ async function fileList(bucketName, options = {}) {
     if (response.pagination.last_page > 1) {
       console.log(chalk.gray(`Page ${response.pagination.current_page} of ${response.pagination.last_page}`));
       if (response.pagination.current_page < response.pagination.last_page) {
-        console.log(chalk.cyan('Next page: '), chalk.yellow(`lexia storage files ${bucketName} --page ${response.pagination.current_page + 1}`));
+        console.log(chalk.cyan('Next page: '), chalk.yellow(`orca storage files ${bucketName} --page ${response.pagination.current_page + 1}`));
       }
     }
     
@@ -861,7 +861,7 @@ async function permissionList(bucketName) {
     if (response.count === 0) {
       console.log(chalk.yellow('\n📭 No permissions found'));
       console.log(chalk.cyan('\n💡 Add a permission:'));
-      console.log(chalk.white('  '), chalk.yellow(`lexia storage permission add ${bucketName} --target-type user --target-id USER_ID --read`));
+      console.log(chalk.white('  '), chalk.yellow(`orca storage permission add ${bucketName} --target-type user --target-id USER_ID --read`));
       console.log('');
       return;
     }

@@ -1,18 +1,18 @@
-# Lexia CLI Architecture
+# Orca CLI Architecture
 
 ## Command Flow Diagram
 
-### `lexia kickstart python` - Complete Flow
+### `orca kickstart python` - Complete Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         USER RUNS COMMAND                            │
-│                    $ lexia kickstart python                          │
+│                    $ orca kickstart python                          │
 └─────────────────────────────┬───────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│  1. CLI Entry Point (bin/lexia.js)                                  │
+│  1. CLI Entry Point (bin/orca.js)                                  │
 │     • Parse command and options                                      │
 │     • Route to kickstart-python.js                                   │
 └─────────────────────────────┬───────────────────────────────────────┘
@@ -49,7 +49,7 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  4. Clone Repository (simple-git)                                    │
-│     • Source: github.com/Xalantico/lexia-starter-kit-python-v1      │
+│     • Source: github.com/Orcapt/orca-starter-kit-python-v1      │
 │     • Destination: project directory                                 │
 │     • Clone full repository with all files                           │
 └─────────────────────────────┬───────────────────────────────────────┘
@@ -57,19 +57,19 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  5. Create Virtual Environment                                       │
-│     • Run: python3 -m venv lexia_env                                │
+│     • Run: python3 -m venv orca_env                                │
 │     • Creates isolated Python environment                            │
 │     • Platform-specific paths:                                       │
-│       - Windows: lexia_env\Scripts\python.exe                        │
-│       - Unix: lexia_env/bin/python                                   │
+│       - Windows: orca_env\Scripts\python.exe                        │
+│       - Unix: orca_env/bin/python                                   │
 └─────────────────────────────┬───────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  6. Install Dependencies                                             │
-│     • Use: lexia_env/bin/pip install -r requirements.txt            │
+│     • Use: orca_env/bin/pip install -r requirements.txt            │
 │     • Installs:                                                      │
-│       - lexia>=1.2.5                                                 │
+│       - orca>=1.2.5                                                 │
 │       - openai>=1.0.0                                                │
 │       - fastapi>=0.100.0                                             │
 │       - uvicorn>=0.20.0                                              │
@@ -88,7 +88,7 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  8. Start Backend Server                                             │
-│     • Command: lexia_env/bin/python main.py --dev                   │
+│     • Command: orca_env/bin/python main.py --dev                   │
 │     • Port: 5001 (configurable with --agent-port)                   │
 │     • Process spawned in background                                  │
 │     • Wait 2 seconds for startup                                     │
@@ -100,7 +100,7 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  9. Start Frontend Server                                            │
-│     • Command: npx -y @lexia/ui lexia --port=3000 --agent-port=5001│
+│     • Command: npx -y @orca/ui orca --port=3000 --agent-port=5001│
 │     • Port: 3000 (configurable with --port)                         │
 │     • Process spawned in background                                  │
 │     • Wait 3 seconds for startup                                     │
@@ -112,7 +112,7 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  10. Success! Both Servers Running                                   │
-│      🎉 Lexia is running!                                           │
+│      🎉 Orca is running!                                           │
 │      Frontend: http://localhost:3000                                 │
 │      Backend:  http://localhost:5001                                 │
 │                                                                      │
@@ -146,7 +146,7 @@
 ```
 ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
 │              │      │              │      │              │
-│     User     │─────▶│  Lexia CLI   │─────▶│    GitHub    │
+│     User     │─────▶│  Orca CLI   │─────▶│    GitHub    │
 │              │      │              │      │              │
 └──────────────┘      └──────┬───────┘      └──────────────┘
                              │                      │
@@ -164,7 +164,7 @@
                       ┌──────────────┐
                       │              │
                       │  Python Env  │
-                      │  (lexia_env) │
+                      │  (orca_env) │
                       │              │
                       └──────┬───────┘
                              │
@@ -187,7 +187,7 @@
                              ▼
                       ┌──────────────┐
                       │              │
-                      │  Lexia CLI   │
+                      │  Orca CLI   │
                       │  (running)   │
                       │              │
                       └──────────────┘
@@ -196,8 +196,8 @@
 ## File Structure After Kickstart
 
 ```
-lexia-kickstart/                    ← Created by CLI
-├── lexia_env/                      ← Virtual environment (created)
+orca-kickstart/                    ← Created by CLI
+├── orca_env/                      ← Virtual environment (created)
 │   ├── bin/                        ← Unix
 │   │   ├── python                  ← Python interpreter
 │   │   ├── pip                     ← Package manager
@@ -222,7 +222,7 @@ lexia-kickstart/                    ← Created by CLI
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Lexia CLI Process                         │
+│                    Orca CLI Process                         │
 │                      (PID: 10000)                            │
 │                                                              │
 │  ┌────────────────────────────────────────────────────┐    │
@@ -242,7 +242,7 @@ lexia-kickstart/                    ← Created by CLI
 │  ┌────────────────────────────────────────────────────┐    │
 │  │  Child Process 2: Frontend                         │    │
 │  │  • PID: 10002                                      │    │
-│  │  • Command: npx @lexia/ui lexia ...                │    │
+│  │  • Command: npx @orca/ui orca ...                │    │
 │  │  • Port: 3000                                      │    │
 │  │  • stdout/stderr: piped                            │    │
 │  └────────────────────────────────────────────────────┘    │
@@ -265,7 +265,7 @@ User Browser (localhost:3000)
         ▼
 ┌──────────────────┐
 │  Frontend UI     │
-│  (@lexia/ui)     │
+│  (@orca/ui)     │
 │  Port: 3000      │
 └────────┬─────────┘
          │
@@ -326,7 +326,7 @@ User Browser (localhost:3000)
 
 ## Module Breakdown
 
-### bin/lexia.js
+### bin/orca.js
 - Entry point
 - Command parsing (commander)
 - Route to appropriate command handler
@@ -354,10 +354,10 @@ User Browser (localhost:3000)
 ## Configuration Options
 
 ```
-lexia kickstart python [options]
+orca kickstart python [options]
 
 Options:
-  -d, --directory <name>    Directory name (default: "lexia-kickstart")
+  -d, --directory <name>    Directory name (default: "orca-kickstart")
   -p, --port <number>       Frontend port (default: 3000)
   -a, --agent-port <number> Backend port (default: 5001)
   --no-start                Skip auto-starting servers
@@ -367,7 +367,7 @@ Options:
 ## Dependencies Used
 
 ```
-@lexia/cli
+@orca/cli
 ├── chalk           → Terminal colors & styling
 ├── commander       → CLI framework & argument parsing
 ├── cross-spawn     → Cross-platform process spawning
@@ -380,15 +380,15 @@ Options:
 
 ### Windows
 - Uses backslashes in paths
-- Python: `lexia_env\Scripts\python.exe`
-- Pip: `lexia_env\Scripts\pip.exe`
-- Activate: `lexia_env\Scripts\activate.bat`
+- Python: `orca_env\Scripts\python.exe`
+- Pip: `orca_env\Scripts\pip.exe`
+- Activate: `orca_env\Scripts\activate.bat`
 
 ### Unix (Linux/macOS)
 - Uses forward slashes in paths
-- Python: `lexia_env/bin/python`
-- Pip: `lexia_env/bin/pip`
-- Activate: `source lexia_env/bin/activate`
+- Python: `orca_env/bin/python`
+- Pip: `orca_env/bin/pip`
+- Activate: `source orca_env/bin/activate`
 
 ### Detection
 - `process.platform === 'win32'` → Windows

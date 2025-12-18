@@ -1,11 +1,11 @@
 /**
- * Lexia CLI Configuration
+ * Orca CLI Configuration
  * Centralized configuration for all API endpoints and URLs
  */
 
-// Main Lexia Deploy API
-// Can be overridden with LEXIA_API_URL environment variable
-const API_BASE_URL = process.env.LEXIA_API_URL  ||'http://lexia-proxy-api.com:81' ||'https://deploy-api.lexiaplatform.com';
+// Main Orca Deploy API
+// Can be overridden with ORCA_API_URL environment variable
+const API_BASE_URL = process.env.ORCA_API_URL  ||'https://deploy-api.orcapt.com';
 
 // API Endpoints
 const API_ENDPOINTS = {
@@ -43,14 +43,14 @@ const API_ENDPOINTS = {
 
 // GitHub Repository URLs
 const GITHUB_REPOS = {
-  PYTHON_STARTER: 'https://github.com/Xalantico/lexia-starter-kit-python-v1',
-  NODE_STARTER: 'https://github.com/Xalantico/lexia-starter-kit-node-v1'
+  PYTHON_STARTER: 'https://github.com/Orcapt/orca-starter-kit-python-v1',
+  NODE_STARTER: 'https://github.com/Orcapt/orca-starter-kit-node-v1'
 };
 
 // Documentation URLs
 const DOCS_URLS = {
-  PYTHON: 'https://raw.githubusercontent.com/Lexia-Platform/lexia-pip/main/LEXIA_USAGE_GUIDE.md',
-  NODEJS: 'https://raw.githubusercontent.com/Lexia-Platform/lexia-npm/main/LEXIA_USAGE_GUIDE.md'
+  PYTHON: 'https://raw.githubusercontent.com/Orca-Platform/orca-pip/main/ORCA_USAGE_GUIDE.md',
+  NODEJS: 'https://raw.githubusercontent.com/Orca-Platform/orca-npm/main/ORCA_USAGE_GUIDE.md'
 };
 
 module.exports = {

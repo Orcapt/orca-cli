@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Lexia CLI will be documented in this file.
+All notable changes to Orca CLI will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Lambda Deployment
 
-- **NEW**: `lexia ship <function-name>` - Deploy Docker images to AWS Lambda
+- **NEW**: `orca ship <function-name>` - Deploy Docker images to AWS Lambda
 - Automatic ECR repository creation and management
 - Real-time progress bar for Docker image push
 - Support for custom memory and timeout settings
@@ -24,39 +24,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Lambda Management
 
-- `lexia lambda list` - List all Lambda functions
-- `lexia lambda info <function-name>` - Get function details
-- `lexia lambda invoke <function-name>` - Invoke functions with optional payload
-- `lexia lambda logs <function-name>` - View function logs
-- `lexia lambda remove <function-name>` - Delete functions
+- `orca lambda list` - List all Lambda functions
+- `orca lambda info <function-name>` - Get function details
+- `orca lambda invoke <function-name>` - Invoke functions with optional payload
+- `orca lambda logs <function-name>` - View function logs
+- `orca lambda remove <function-name>` - Delete functions
 
 #### Storage Management
 
 - **Bucket Management**:
-  - `lexia storage bucket create` - Create S3-compatible buckets
-  - `lexia storage bucket list` - List all buckets
-  - `lexia storage bucket info` - Get bucket details
-  - `lexia storage bucket delete` - Delete buckets (with `--force` option)
+  - `orca storage bucket create` - Create S3-compatible buckets
+  - `orca storage bucket list` - List all buckets
+  - `orca storage bucket info` - Get bucket details
+  - `orca storage bucket delete` - Delete buckets (with `--force` option)
 - **File Management**:
-  - `lexia storage upload` - Upload files to buckets
-  - `lexia storage download` - Download files from buckets
-  - `lexia storage files` - List files in buckets
-  - `lexia storage delete` - Delete files from buckets
+  - `orca storage upload` - Upload files to buckets
+  - `orca storage download` - Download files from buckets
+  - `orca storage files` - List files in buckets
+  - `orca storage delete` - Delete files from buckets
 - **Permission Management**:
-  - `lexia storage permission add` - Add bucket permissions
-  - `lexia storage permission list` - List bucket permissions
+  - `orca storage permission add` - Add bucket permissions
+  - `orca storage permission list` - List bucket permissions
 
 #### Database Management
 
-- `lexia db create` - Create PostgreSQL databases
-- `lexia db list` - List all databases
-- `lexia db remove` - Delete databases
+- `orca db create` - Create PostgreSQL databases
+- `orca db list` - List all databases
+- `orca db remove` - Delete databases
 
 #### Authentication
 
-- `lexia login` - Authenticate with Lexia platform
-- `lexia logout` - Clear stored credentials
-- `lexia status` - Check authentication status and workspace info
+- `orca login` - Authenticate with Orca platform
+- `orca logout` - Clear stored credentials
+- `orca status` - Check authentication status and workspace info
 
 ### ✨ Enhancements
 
@@ -118,21 +118,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Kickstart Commands
 
-- `lexia kickstart python` - Python-based agent setup
-- `lexia kickstart node` - Node.js-based agent setup
+- `orca kickstart python` - Python-based agent setup
+- `orca kickstart node` - Node.js-based agent setup
 - Automatic virtual environment creation
 - Dependency installation
 - Backend and frontend auto-start
 
 #### UI Management
 
-- `lexia ui init` - Install Lexia UI globally
-- `lexia ui start` - Start the Lexia UI
-- `lexia ui remove` - Uninstall Lexia UI
+- `orca ui init` - Install Orca UI globally
+- `orca ui start` - Start the Orca UI
+- `orca ui remove` - Uninstall Orca UI
 
 #### Documentation
 
-- `lexia fetch doc` - Download SDK documentation
+- `orca fetch doc` - Download SDK documentation
 
 #### Core Features
 
@@ -147,26 +147,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### v2.1.0 (Planned)
 
-- [ ] `lexia lambda rollback` - Rollback to previous version
-- [ ] `lexia lambda alias` - Manage function aliases
-- [ ] `lexia ship --auto-scale` - Auto-scaling configuration
-- [ ] `lexia ship --vpc` - VPC configuration
-- [ ] `lexia storage sync` - Sync local folder to bucket
-- [ ] `lexia storage cdn` - CDN configuration
+- [ ] `orca lambda rollback` - Rollback to previous version
+- [ ] `orca lambda alias` - Manage function aliases
+- [ ] `orca ship --auto-scale` - Auto-scaling configuration
+- [ ] `orca ship --vpc` - VPC configuration
+- [ ] `orca storage sync` - Sync local folder to bucket
+- [ ] `orca storage cdn` - CDN configuration
 
 ### v2.2.0 (Planned)
 
-- [ ] `lexia stop` - Stop running servers
-- [ ] `lexia restart` - Restart servers
-- [ ] `lexia update` - Update Lexia packages
-- [ ] `lexia config` - Configure Lexia settings
-- [ ] `lexia logs` - View all logs
+- [ ] `orca stop` - Stop running servers
+- [ ] `orca restart` - Restart servers
+- [ ] `orca update` - Update Orca packages
+- [ ] `orca config` - Configure Orca settings
+- [ ] `orca logs` - View all logs
 
 ### v3.0.0 (Future)
 
-- [ ] `lexia kickstart go` - Go-based agent
-- [ ] `lexia kickstart rust` - Rust-based agent
-- [ ] `lexia kickstart typescript` - TypeScript-based agent
+- [ ] `orca kickstart go` - Go-based agent
+- [ ] `orca kickstart rust` - Rust-based agent
+- [ ] `orca kickstart typescript` - TypeScript-based agent
 - [ ] Multi-region deployment support
 - [ ] CI/CD pipeline integration
 - [ ] Monitoring and alerting
@@ -179,15 +179,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Authentication Required
 
-All commands now require authentication. Run `lexia login` before using any command.
+All commands now require authentication. Run `orca login` before using any command.
 
 ```bash
 # Before
-lexia kickstart python
+orca kickstart python
 
 # After
-lexia login
-lexia kickstart python
+orca login
+orca kickstart python
 ```
 
 #### New Lambda Deployment
@@ -203,21 +203,21 @@ docker push ECR_URL/my-app:latest
 
 # New way (automatic)
 docker build -t my-app:latest .
-lexia ship my-api --image=my-app:latest
+orca ship my-api --image=my-app:latest
 ```
 
 #### Storage Management
 
-Storage commands are now organized under `lexia storage`:
+Storage commands are now organized under `orca storage`:
 
 ```bash
 # Bucket operations
-lexia storage bucket create my-bucket
-lexia storage bucket list
+orca storage bucket create my-bucket
+orca storage bucket list
 
 # File operations
-lexia storage upload my-bucket ./file.txt
-lexia storage files my-bucket
+orca storage upload my-bucket ./file.txt
+orca storage files my-bucket
 ```
 
 ---
@@ -226,7 +226,7 @@ lexia storage files my-bucket
 
 ### v2.0.0
 
-- **Authentication**: All commands now require authentication via `lexia login`
+- **Authentication**: All commands now require authentication via `orca login`
 - **Command Structure**: Storage and database commands moved under subcommands
 - **Environment**: Node.js 14+ now required (was 12+)
 
@@ -234,9 +234,9 @@ lexia storage files my-bucket
 
 ## Contributors
 
-- **Lexia Team** - Initial work and ongoing development
+- **Orca Team** - Initial work and ongoing development
 - **Community Contributors** - Bug reports and feature requests
 
 ---
 
-**Made with ❤️ by the Lexia Team**
+**Made with ❤️ by the Orca Team**

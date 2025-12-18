@@ -1,29 +1,29 @@
 {
-  "name": "@lexia/cli",
+  "name": "@orca/cli",
   "version": "0.4.1",
-  "description": "CLI tool for managing Lexia projects - Quick setup and deployment",
+  "description": "CLI tool for managing Orca projects - Quick setup and deployment",
   "main": "src/index.js",
   "bin": {
-    "lexia": "bin/lexia.js"
+    "orca": "bin/orca.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node bin/lexia.js",
+    "dev": "node bin/orca.js",
     "link": "npm link",
-    "unlink": "npm unlink -g @lexia/cli",
-    "dev:help": "node bin/lexia.js --help",
-    "dev:login": "node bin/lexia.js login",
-    "dev:db": "node bin/lexia.js db list"
+    "unlink": "npm unlink -g @orca/cli",
+    "dev:help": "node bin/orca.js --help",
+    "dev:login": "node bin/orca.js login",
+    "dev:db": "node bin/orca.js db list"
   },
   "keywords": [
-    "lexia",
+    "orca",
     "cli",
     "ai",
     "chatbot",
     "agent",
     "development"
   ],
-  "author": "Xalantico",
+  "author": "Orcapt",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
@@ -38,16 +38,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Xalantico/lexia-cli.git"
+    "url": "git+https://github.com/Orcapt/orca-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/Xalantico/lexia-cli/issues"
+    "url": "https://github.com/Orcapt/orca-cli/issues"
   },
-  "homepage": "https://github.com/Xalantico/lexia-cli#readme",
+  "homepage": "https://github.com/Orcapt/orca-cli#readme",
   "files": [
     "bin/",
     "src/",
-    "lexia-kickstart/",
+    "orca-kickstart/",
     "README.md",
     "LICENSE",
     "QUICK_START.md"
