@@ -180,7 +180,7 @@ async function uiStart(options) {
       
       if (result.status === 0) {
         const globalModulesPath = result.stdout.trim();
-        uiDistPath = path.join(globalModulesPath, '@orca', 'ui', 'dist');
+        uiDistPath = path.join(globalModulesPath, '@orcapt', 'ui', 'dist');
         
         if (!fs.existsSync(uiDistPath)) {
           console.log(chalk.red(`\n✗ @orcapt/ui is installed but dist folder not found at: ${uiDistPath}`));
