@@ -35,13 +35,13 @@ function isNpxAvailable() {
  */
 function isUICached() {
   try {
-    const result = spawn.sync('npm', ['list', '@orca/ui', '--depth=0'], {
+    const result = spawn.sync('npm', ['list', '@orcapt/ui', '--depth=0'], {
       encoding: 'utf8',
       stdio: 'pipe',
       cwd: os.homedir()
     });
     
-    return result.stdout.includes('@orca/ui');
+    return result.stdout.includes('@orcapt/ui');
   } catch (error) {
     return false;
   }
@@ -76,12 +76,12 @@ function saveUIConfig(installed = true) {
  */
 function isUIInstalled() {
   try {
-    const result = spawn.sync('npm', ['list', '-g', '@orca/ui', '--depth=0'], {
+    const result = spawn.sync('npm', ['list', '-g', '@orcapt/ui', '--depth=0'], {
       encoding: 'utf8',
       stdio: 'pipe'
     });
     
-    return result.status === 0 && result.stdout.includes('@orca/ui');
+    return result.status === 0 && result.stdout.includes('@orcapt/ui');
   } catch (error) {
     return false;
   }
@@ -102,10 +102,10 @@ async function uiInit() {
     return;
   }
 
-  const spinner = ora('Installing @orca/ui globally...').start();
+  const spinner = ora('Installing @orcapt/ui globally...').start();
 
   try {
-    const result = spawn.sync('npm', ['install', '-g', '@orca/ui'], {
+    const result = spawn.sync('npm', ['install', '-g', '@orcapt/ui'], {
       encoding: 'utf8',
       stdio: 'inherit'
     });
@@ -117,15 +117,15 @@ async function uiInit() {
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Installation Complete'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('\n📦 Package:'), chalk.yellow('@orca/ui'));
+      console.log(chalk.white('\n📦 Package:'), chalk.yellow('@orcapt/ui'));
       console.log(chalk.white('📁 Type:'), chalk.white('React component library with built UI'));
       console.log(chalk.white('\nYou can now run:'));
       console.log(chalk.yellow('  • orca ui start --port 3000 --agent-port 5001'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       spinner.fail(chalk.red('Installation failed'));
-      console.log(chalk.red('\n✗ Failed to install @orca/ui'));
-      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm install -g @orca/ui\n'));
+      console.log(chalk.red('\n✗ Failed to install @orcapt/ui'));
+      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm install -g @orcapt/ui\n'));
       process.exit(1);
     }
   } catch (error) {
@@ -156,7 +156,7 @@ async function uiStart(options) {
 
   console.log(chalk.white('Frontend:'), chalk.yellow(`http://localhost:${port}`));
   console.log(chalk.white('Backend: '), chalk.yellow(`http://localhost:${agentPort}`));
-  console.log(chalk.green('\n✓ Serving @orca/ui from global installation'));
+  console.log(chalk.green('\n✓ Serving @orcapt/ui from global installation'));
   console.log(chalk.gray(`   Configure your agent endpoint in the UI settings`));
   
   console.log(chalk.cyan('\n⚠ Press Ctrl+C to stop the UI\n'));
@@ -168,7 +168,7 @@ async function uiStart(options) {
     
     let uiProcess;
     
-    // Find the path to the installed @orca/ui package
+    // Find the path to the installed @orcapt/ui package
     let uiDistPath;
     
     if (isInstalled) {
@@ -183,7 +183,7 @@ async function uiStart(options) {
         uiDistPath = path.join(globalModulesPath, '@orca', 'ui', 'dist');
         
         if (!fs.existsSync(uiDistPath)) {
-          console.log(chalk.red(`\n✗ @orca/ui is installed but dist folder not found at: ${uiDistPath}`));
+          console.log(chalk.red(`\n✗ @orcapt/ui is installed but dist folder not found at: ${uiDistPath}`));
           console.log(chalk.yellow('\nTry reinstalling:'), chalk.white('orca ui remove && orca ui init\n'));
           process.exit(1);
         }
@@ -191,7 +191,7 @@ async function uiStart(options) {
     }
     
     if (!uiDistPath) {
-      console.log(chalk.red('\n✗ Could not find @orca/ui installation'));
+      console.log(chalk.red('\n✗ Could not find @orcapt/ui installation'));
       console.log(chalk.yellow('\nPlease run:'), chalk.white('orca ui init\n'));
       process.exit(1);
     }
@@ -247,10 +247,10 @@ async function uiRemove() {
     return;
   }
 
-  const spinner = ora('Uninstalling @orca/ui...').start();
+  const spinner = ora('Uninstalling @orcapt/ui...').start();
 
   try {
-    const result = spawn.sync('npm', ['uninstall', '-g', '@orca/ui'], {
+    const result = spawn.sync('npm', ['uninstall', '-g', '@orcapt/ui'], {
       encoding: 'utf8',
       stdio: 'inherit'
     });
@@ -262,13 +262,13 @@ async function uiRemove() {
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Uninstallation Complete'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('\n@orca/ui package has been removed.'));
+      console.log(chalk.white('\n@orcapt/ui package has been removed.'));
       console.log(chalk.white('\nTo reinstall, run:'), chalk.yellow('orca ui init'));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       spinner.fail(chalk.red('Uninstallation failed'));
-      console.log(chalk.red('\n✗ Failed to remove @orca/ui'));
-      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm uninstall -g @orca/ui\n'));
+      console.log(chalk.red('\n✗ Failed to remove @orcapt/ui'));
+      console.log(chalk.yellow('\nTry running manually:'), chalk.white('npm uninstall -g @orcapt/ui\n'));
       process.exit(1);
     }
   } catch (error) {

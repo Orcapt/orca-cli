@@ -1,4 +1,4 @@
-# @orca/cli - Quick Start Guide
+# @orcapt/cli - Quick Start Guide
 
 Get your Orca AI agent running in less than 2 minutes! ⚡
 
@@ -7,26 +7,29 @@ Get your Orca AI agent running in less than 2 minutes! ⚡
 Choose one of these methods:
 
 ### Method 1: Use directly with npx (No installation)
+
 ```bash
-npx @orca/cli kickstart python
+npx @orcapt/cli kickstart python
 # or
-npx @orca/cli kickstart node
+npx @orcapt/cli kickstart node
 ```
 
 ### Method 2: Install globally
+
 ```bash
-npm install -g @orca/cli
-orca kickstart python
+npm install -g @orcapt/cli
+orcapt kickstart python
 # or
-orca kickstart node
+orcapt kickstart node
 ```
 
 ### Method 3: Install from source
+
 ```bash
 cd orca-cli
 npm install
 npm link
-orca kickstart python  # or node
+orcapt kickstart python  # or node
 ```
 
 ## Basic Usage
@@ -34,16 +37,19 @@ orca kickstart python  # or node
 ### 1. Start a New Agent
 
 **Python Agent:**
+
 ```bash
-orca kickstart python
+orcapt kickstart python
 ```
 
 **Node.js Agent:**
+
 ```bash
-orca kickstart node
+orcapt kickstart node
 ```
 
 This command will:
+
 - Check if you have Python, Git, and Node.js installed
 - Create a `orca-kickstart` directory
 - Clone the starter kit
@@ -55,39 +61,43 @@ This command will:
 ### 2. Other Languages
 
 **Node.js (Available Now):**
+
 ```bash
-orca kickstart node
+orcapt kickstart node
 ```
 
 **Go (Coming Soon):**
+
 ```bash
-orca kickstart go
+orcapt kickstart go
 ```
 
 ### 3. Custom Setup
 
 **Python:**
+
 ```bash
 # Custom directory name
-orca kickstart python --directory my-ai-agent
+orcapt kickstart python --directory my-ai-agent
 
 # Custom ports
-orca kickstart python --port 8080 --agent-port 8000
+orcapt kickstart python --port 8080 --agent-port 8000
 
 # Setup without auto-start
-orca kickstart python --no-start
+orcapt kickstart python --no-start
 ```
 
 **Node.js:**
+
 ```bash
 # Custom directory name
-orca kickstart node --directory my-node-agent
+orcapt kickstart node --directory my-node-agent
 
-# Custom ports  
-orca kickstart node --port 8080 --agent-port 8000
+# Custom ports
+orcapt kickstart node --port 8080 --agent-port 8000
 
 # Setup without auto-start
-orca kickstart node --no-start
+orcapt kickstart node --no-start
 ```
 
 ### 4. Stopping Servers
@@ -120,6 +130,7 @@ orca-kickstart/
 ### Prerequisites Missing?
 
 **Python:**
+
 ```bash
 # macOS
 brew install python3
@@ -132,6 +143,7 @@ sudo apt install python3 python3-pip
 ```
 
 **Git:**
+
 ```bash
 # macOS
 brew install git
@@ -147,7 +159,7 @@ sudo apt install git
 
 ```bash
 # Use different ports
-orca kickstart python --port 4000 --agent-port 5000
+orcapt kickstart python --port 4000 --agent-port 5000
 ```
 
 ### Directory Already Exists?
@@ -157,7 +169,7 @@ orca kickstart python --port 4000 --agent-port 5000
 rm -rf orca-kickstart
 
 # Or use a different name
-orca kickstart python --directory my-new-agent
+orcapt kickstart python --directory my-new-agent
 ```
 
 ## Manual Control
@@ -175,13 +187,13 @@ orca_env\Scripts\activate       # Windows
 python main.py --dev
 
 # In another terminal, start frontend
-npx -y @orca/ui orca --port=3000 --agent-port=5001
+npx -y @orcapt/ui --port=3000 --agent-port=5001
 ```
 
 ## Example Session
 
 ```bash
-$ orca kickstart python
+$ orcapt kickstart python
 
 ============================================================
 🚀 Orca Kickstart - Python
@@ -227,4 +239,3 @@ Backend:  http://localhost:5001
 ---
 
 **Ready to build amazing AI agents? Let's go! 🚀**
-

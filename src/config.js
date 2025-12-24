@@ -5,7 +5,7 @@
 
 // Main Orca Deploy API
 // Can be overridden with ORCA_API_URL environment variable
-const API_BASE_URL = process.env.ORCA_API_URL  ||'https://deploy-api.orcapt.com';
+const API_BASE_URL = process.env.ORCA_API_URL  || 'https://deploy-stage-api.orcapt.com' ||'https://deploy-api.orcapt.com';
 
 // API Endpoints
 const API_ENDPOINTS = {

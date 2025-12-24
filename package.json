@@ -1,16 +1,16 @@
 {
-  "name": "@orca/cli",
+  "name": "@orcapt/cli",
   "version": "0.4.1",
   "description": "CLI tool for managing Orca projects - Quick setup and deployment",
   "main": "src/index.js",
   "bin": {
-    "orca": "bin/orca.js"
+    "orcapt": "bin/orca.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node bin/orca.js",
     "link": "npm link",
-    "unlink": "npm unlink -g @orca/cli",
+    "unlink": "npm unlink -g @orcapt/cli",
     "dev:help": "node bin/orca.js --help",
     "dev:login": "node bin/orca.js login",
     "dev:db": "node bin/orca.js db list"

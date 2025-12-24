@@ -1,10 +1,10 @@
-# @orca/cli
+# @orcapt/cli
 
 > A powerful command-line tool for managing Orca projects. Set up and run your AI agent in seconds! 🚀
 
 ## ✨ Features
 
-- 🎯 **One Command Setup** - Clone, configure, and run with `orca kickstart <language>`
+- 🎯 **One Command Setup** - Clone, configure, and run with `orcapt kickstart <language>`
 - 🌐 **Multi-Language Support** - Python ✅ | Node.js ✅ | Go (coming soon)
 - 🖥️ **Cross-Platform** - Works on Windows, Linux, and macOS
 - 📦 **No Dependencies** - Just Node.js (which you already have!)
@@ -19,7 +19,7 @@
 
 ### Latest Features (v2.0)
 
-- 🚀 **`orca ship`** - Deploy Docker images to AWS Lambda in one command!
+- 🚀 **`orcapt ship`** - Deploy Docker images to AWS Lambda in one command!
 - 📊 **Real-time Progress Bar** - See exactly how much of your image has been pushed
 - 🔐 **Environment Variables** - Support for `.env` files and `--env` flags
 - 💾 **Storage Management** - Full S3-compatible storage with buckets, files, and permissions
@@ -34,10 +34,10 @@
 
 ```bash
 # Install globally via npm
-npm install -g @orca/cli
+npm install -g @orcapt/cli
 
 # Or use it directly with npx (no installation needed)
-npx @orca/cli kickstart python
+npx @orcapt/cli kickstart python
 ```
 
 ### Install from Source
@@ -70,7 +70,7 @@ Make sure you have these installed:
 First, authenticate with Orca:
 
 ```bash
-orca login
+orcapt login
 ```
 
 ### Usage
@@ -78,7 +78,7 @@ orca login
 Create and run a new Orca Python agent in one command:
 
 ```bash
-orca kickstart python
+orcapt kickstart python
 ```
 
 That's it! This will:
@@ -95,33 +95,33 @@ That's it! This will:
 
 ### Authentication Commands
 
-#### `orca login`
+#### `orcapt login`
 
 Authenticate with Orca platform.
 
 ```bash
-orca login
+orcapt login
 ```
 
-#### `orca logout`
+#### `orcapt logout`
 
 Clear stored credentials.
 
 ```bash
-orca logout
+orcapt logout
 ```
 
-#### `orca status`
+#### `orcapt status`
 
 Check authentication status and workspace info.
 
 ```bash
-orca status
+orcapt status
 ```
 
 ---
 
-### `orca kickstart <language>`
+### `orcapt kickstart <language>`
 
 Quick setup for a new Orca project in your preferred language.
 
@@ -131,7 +131,7 @@ Quick setup for a new Orca project in your preferred language.
 - **`node`** - Node.js-based agent (Express + OpenAI) ✅ Available now
 - **`go`** - Go-based agent 🚧 Coming soon
 
-#### `orca kickstart python`
+#### `orcapt kickstart python`
 
 Set up a Python-based Orca agent with FastAPI and OpenAI.
 
@@ -148,22 +148,22 @@ Set up a Python-based Orca agent with FastAPI and OpenAI.
 
 ```bash
 # Basic usage
-orca kickstart python
+orcapt kickstart python
 
 # Custom directory name
-orca kickstart python --directory my-awesome-agent
+orcapt kickstart python --directory my-awesome-agent
 
 # Custom ports
-orca kickstart python --port 8080 --agent-port 8000
+orcapt kickstart python --port 8080 --agent-port 8000
 
 # Setup without auto-start
-orca kickstart python --no-start
+orcapt kickstart python --no-start
 
 # All options combined
-orca kickstart python -d my-agent -p 4000 -a 5000
+orcapt kickstart python -d my-agent -p 4000 -a 5000
 ```
 
-#### `orca kickstart node`
+#### `orcapt kickstart node`
 
 Set up a Node.js-based Orca agent with Express and OpenAI.
 
@@ -173,35 +173,35 @@ Set up a Node.js-based Orca agent with Express and OpenAI.
 
 ```bash
 # Basic usage
-orca kickstart node
+orcapt kickstart node
 
 # Custom directory name
-orca kickstart node --directory my-node-agent
+orcapt kickstart node --directory my-node-agent
 
 # Custom ports
-orca kickstart node --port 8080 --agent-port 8000
+orcapt kickstart node --port 8080 --agent-port 8000
 
 # All options combined
-orca kickstart node -d my-agent -p 4000 -a 5000
+orcapt kickstart node -d my-agent -p 4000 -a 5000
 ```
 
 #### Coming Soon:
 
 ```bash
 # Go agent (coming soon)
-orca kickstart go
+orcapt kickstart go
 ```
 
 ---
 
-### 🚀 `orca ship <function-name>`
+### 🚀 `orcapt ship <function-name>`
 
 Deploy Docker images to AWS Lambda with one command!
 
 **Syntax:**
 
 ```bash
-orca ship <function-name> [options]
+orcapt ship <function-name> [options]
 ```
 
 **Options:**
@@ -216,28 +216,28 @@ orca ship <function-name> [options]
 
 ```bash
 # Basic deployment
-orca ship my-api --image=my-app:latest
+orcapt ship my-api --image=my-app:latest
 
 # With custom memory and timeout
-orca ship my-api \
+orcapt ship my-api \
   --image=my-app:latest \
   --memory=1024 \
   --timeout=60
 
 # With environment variables
-orca ship my-api \
+orcapt ship my-api \
   --image=my-app:latest \
   --env DATABASE_URL=postgres://... \
   --env API_KEY=secret123 \
   --env DEBUG=true
 
 # With .env file
-orca ship my-api \
+orcapt ship my-api \
   --image=my-app:latest \
   --env-file=.env
 
 # Override .env with specific values
-orca ship my-api \
+orcapt ship my-api \
   --image=my-app:latest \
   --env-file=.env \
   --env DEBUG=false
@@ -302,55 +302,55 @@ Try it:
 
 ### Lambda Management Commands
 
-#### `orca lambda list`
+#### `orcapt lambda list`
 
 List all Lambda functions in your workspace.
 
 ```bash
-orca lambda list
+orcapt lambda list
 ```
 
-#### `orca lambda info <function-name>`
+#### `orcapt lambda info <function-name>`
 
 Get detailed information about a Lambda function.
 
 ```bash
-orca lambda info my-api
+orcapt lambda info my-api
 ```
 
-#### `orca lambda invoke <function-name>`
+#### `orcapt lambda invoke <function-name>`
 
 Invoke a Lambda function.
 
 ```bash
 # Simple invoke
-orca lambda invoke my-api
+orcapt lambda invoke my-api
 
 # With JSON payload
-orca lambda invoke my-api --payload '{"key": "value"}'
+orcapt lambda invoke my-api --payload '{"key": "value"}'
 ```
 
-#### `orca lambda logs <function-name>`
+#### `orcapt lambda logs <function-name>`
 
 View Lambda function logs.
 
 ```bash
 # Recent logs
-orca lambda logs my-api
+orcapt lambda logs my-api
 
 # Stream logs in real-time
-orca lambda logs my-api --tail
+orcapt lambda logs my-api --tail
 
 # Logs from last hour
-orca lambda logs my-api --since 1h
+orcapt lambda logs my-api --since 1h
 ```
 
-#### `orca lambda remove <function-name>`
+#### `orcapt lambda remove <function-name>`
 
 Delete a Lambda function.
 
 ```bash
-orca lambda remove my-api
+orcapt lambda remove my-api
 ```
 
 ---
@@ -363,64 +363,64 @@ Manage S3-compatible storage buckets and files.
 
 ```bash
 # Create bucket
-orca storage bucket create my-bucket
+orcapt storage bucket create my-bucket
 
 # Create public bucket with versioning
-orca storage bucket create my-bucket --public --versioning
+orcapt storage bucket create my-bucket --public --versioning
 
 # List all buckets
-orca storage bucket list
+orcapt storage bucket list
 
 # Get bucket info
-orca storage bucket info my-bucket
+orcapt storage bucket info my-bucket
 
 # Delete bucket
-orca storage bucket delete my-bucket
+orcapt storage bucket delete my-bucket
 
 # Force delete (removes all files)
-orca storage bucket delete my-bucket --force
+orcapt storage bucket delete my-bucket --force
 ```
 
 #### File Management
 
 ```bash
 # Upload file
-orca storage upload my-bucket ./file.txt
+orcapt storage upload my-bucket ./file.txt
 
 # Upload to specific folder
-orca storage upload my-bucket ./file.txt --folder=/documents
+orcapt storage upload my-bucket ./file.txt --folder=/documents
 
 # Upload as public file
-orca storage upload my-bucket ./file.txt --public
+orcapt storage upload my-bucket ./file.txt --public
 
 # List files in bucket
-orca storage files my-bucket
+orcapt storage files my-bucket
 
 # List files in folder
-orca storage files my-bucket --folder=/documents
+orcapt storage files my-bucket --folder=/documents
 
 # Download file
-orca storage download my-bucket file.txt
+orcapt storage download my-bucket file.txt
 
 # Download to specific path
-orca storage download my-bucket file.txt ./downloads/
+orcapt storage download my-bucket file.txt ./downloads/
 
 # Delete file
-orca storage delete my-bucket file.txt
+orcapt storage delete my-bucket file.txt
 ```
 
 #### Permission Management
 
 ```bash
 # Add permission
-orca storage permission add my-bucket \
+orcapt storage permission add my-bucket \
   --target-type=user \
   --target-id=user123 \
   --read \
   --write
 
 # List permissions
-orca storage permission list my-bucket
+orcapt storage permission list my-bucket
 ```
 
 ---
@@ -431,13 +431,13 @@ Create and manage PostgreSQL databases.
 
 ```bash
 # Create database
-orca db create
+orcapt db create
 
 # List all databases
-orca db list
+orcapt db list
 
 # Delete database
-orca db remove my-database
+orcapt db remove my-database
 ```
 
 ---
@@ -448,22 +448,22 @@ Manage Orca UI installation.
 
 ```bash
 # Install UI globally
-orca ui init
+orcapt ui init
 
 # Start UI
-orca ui start
+orcapt ui start
 
 # Start with custom ports
-orca ui start --port 3000 --agent-port 5001
+orcapt ui start --port 3000 --agent-port 5001
 
 # Remove UI
-orca ui remove
+orcapt ui remove
 ```
 
 ## 🎬 What It Looks Like
 
 ```bash
-$ orca kickstart python
+$ orcapt kickstart python
 
 ============================================================
 🚀 Orca Kickstart - Python
@@ -582,7 +582,7 @@ program.command("mycommand").description("My custom command").action(myCommand);
 
 ```bash
 # Use a different directory name
-orca kickstart python --directory my-other-project
+orcapt kickstart python --directory my-other-project
 
 # Or remove the existing directory
 rm -rf orca-kickstart
@@ -592,7 +592,7 @@ rm -rf orca-kickstart
 
 ```bash
 # Use different ports
-orca kickstart python --port 4000 --agent-port 5000
+orcapt kickstart python --port 4000 --agent-port 5000
 
 # Or find and kill the process using the port
 # macOS/Linux: lsof -ti:3000 | xargs kill
@@ -624,11 +624,11 @@ docker images | grep my-app
 
 ```bash
 # Check your authentication
-orca status
+orcapt status
 
 # Re-login if needed
-orca logout
-orca login
+orcapt logout
+orcapt login
 
 # Check backend is running and AWS credentials are configured
 ```
@@ -637,7 +637,7 @@ orca login
 
 ```bash
 # Increase timeout
-orca ship my-api --image=my-app:latest --timeout=120
+orcapt ship my-api --image=my-app:latest --timeout=120
 
 # Check image size (should be < 10 GB)
 docker images | grep my-app
@@ -650,10 +650,10 @@ docker images | grep my-app
 cat .env
 
 # Test with explicit --env flags
-orca ship my-api --image=my-app:latest --env DEBUG=true
+orcapt ship my-api --image=my-app:latest --env DEBUG=true
 
 # Check Lambda function info
-orca lambda info my-api
+orcapt lambda info my-api
 ```
 
 ### Storage Issues
@@ -662,10 +662,10 @@ orca lambda info my-api
 
 ```bash
 # Use a different bucket name
-orca storage bucket create my-bucket-2
+orcapt storage bucket create my-bucket-2
 
 # Or delete existing bucket
-orca storage bucket delete my-bucket --force
+orcapt storage bucket delete my-bucket --force
 ```
 
 **"File upload failed"**
@@ -675,10 +675,10 @@ orca storage bucket delete my-bucket --force
 ls -lh ./file.txt
 
 # Check bucket exists
-orca storage bucket list
+orcapt storage bucket list
 
 # Try with absolute path
-orca storage upload my-bucket /full/path/to/file.txt
+orcapt storage upload my-bucket /full/path/to/file.txt
 ```
 
 ### Platform-Specific Notes
@@ -710,7 +710,7 @@ orca_env\Scripts\activate       # Windows
 python main.py --dev
 
 # In another terminal, start frontend
-npx -y @orca/ui orca --port=3000 --agent-port=5001
+npx -y @orcapt/ui --port=3000 --agent-port=5001
 ```
 
 ## 🌐 Multi-Language Support
@@ -808,7 +808,7 @@ EOF
 docker build -t my-api:latest .
 
 # 7. Deploy to Lambda
-orca ship my-api --image=my-api:latest --memory=1024 --timeout=60
+orcapt ship my-api --image=my-api:latest --memory=1024 --timeout=60
 
 # 8. Test
 curl https://YOUR-FUNCTION-URL/
@@ -825,7 +825,7 @@ DEBUG=false
 EOF
 
 # Deploy with .env
-orca ship my-api \
+orcapt ship my-api \
   --image=my-api:latest \
   --env-file=.env \
   --memory=2048 \
@@ -836,20 +836,20 @@ orca ship my-api \
 
 ```bash
 # 1. Create bucket
-orca storage bucket create my-files --public
+orcapt storage bucket create my-files --public
 
 # 2. Upload files
-orca storage upload my-files ./document.pdf
-orca storage upload my-files ./image.png --folder=/images
+orcapt storage upload my-files ./document.pdf
+orcapt storage upload my-files ./image.png --folder=/images
 
 # 3. List files
-orca storage files my-files
+orcapt storage files my-files
 
 # 4. Download file
-orca storage download my-files document.pdf
+orcapt storage download my-files document.pdf
 
 # 5. Add permissions
-orca storage permission add my-files \
+orcapt storage permission add my-files \
   --target-type=user \
   --target-id=user123 \
   --read --write
@@ -859,29 +859,29 @@ orca storage permission add my-files \
 
 ```bash
 # 1. Login
-orca login
+orcapt login
 
 # 2. Create database
-orca db create
+orcapt db create
 
 # 3. Create storage bucket
-orca storage bucket create app-storage
+orcapt storage bucket create app-storage
 
 # 4. Deploy Lambda function
-orca ship my-app \
+orcapt ship my-app \
   --image=my-app:latest \
   --env DATABASE_URL=postgres://... \
   --env BUCKET_NAME=app-storage \
   --memory=1024
 
 # 5. Check deployment
-orca lambda info my-app
+orcapt lambda info my-app
 
 # 6. View logs
-orca lambda logs my-app
+orcapt lambda logs my-app
 
 # 7. Invoke function
-orca lambda invoke my-app --payload '{"test": true}'
+orcapt lambda invoke my-app --payload '{"test": true}'
 ```
 
 ---
@@ -911,27 +911,27 @@ orca lambda invoke my-app --payload '{"test": true}'
 #### Commands
 
 ```bash
-orca stop            # Stop running servers
-orca restart         # Restart servers
-orca update          # Update Orca packages
-orca config          # Configure Orca settings
-orca logs            # View all logs
+orcapt stop            # Stop running servers
+orcapt restart         # Restart servers
+orcapt update          # Update Orca packages
+orcapt config          # Configure Orca settings
+orcapt logs            # View all logs
 ```
 
 #### Lambda Features
 
 ```bash
-orca ship --auto-scale          # Auto-scaling configuration
-orca ship --vpc                 # VPC configuration
-orca lambda rollback            # Rollback to previous version
-orca lambda alias               # Manage function aliases
+orcapt ship --auto-scale          # Auto-scaling configuration
+orcapt ship --vpc                 # VPC configuration
+orcapt lambda rollback            # Rollback to previous version
+orcapt lambda alias               # Manage function aliases
 ```
 
 #### Storage Features
 
 ```bash
-orca storage sync               # Sync local folder to bucket
-orca storage cdn                # CDN configuration
+orcapt storage sync               # Sync local folder to bucket
+orcapt storage cdn                # CDN configuration
 ```
 
 ### Language Support
