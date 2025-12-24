@@ -49,8 +49,8 @@ const GITHUB_REPOS = {
 
 // Documentation URLs
 const DOCS_URLS = {
-  PYTHON: 'https://raw.githubusercontent.com/Orca-Platform/orca-pip/main/ORCA_USAGE_GUIDE.md',
-  NODEJS: 'https://raw.githubusercontent.com/Orca-Platform/orca-npm/main/ORCA_USAGE_GUIDE.md'
+  PYTHON: 'https://raw.githubusercontent.com/Orcapt/orca-pip/refs/heads/orca/docs/guides/DEVELOPER_GUIDE.md',
+  NODEJS: 'https://raw.githubusercontent.com/Orcapt/orca-npm/refs/heads/main/QUICKSTART.md'
 };
 
 module.exports = {
