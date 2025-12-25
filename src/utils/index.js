@@ -1,5 +1,5 @@
 /**
- * Utility functions for Orca CLI
+ * Utility functions for orcapt CLI
  */
 
 const { spawn } = require('cross-spawn');

@@ -1,6 +1,6 @@
 /**
- * Orca Database Commands
- * Manage PostgreSQL databases via Orca Deploy API
+ * orcapt Database Commands
+ * Manage PostgreSQL databases via orcapt Deploy API
  */
 
 const chalk = require('chalk');
@@ -11,7 +11,7 @@ const { getCredentials } = require('./login');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
 
 /**
- * Make API request to Orca Deploy API
+ * Make API request to orcapt Deploy API
  */
 function makeApiRequest(method, path, credentials) {
   return new Promise((resolve, reject) => {
@@ -73,7 +73,7 @@ async function dbCreate(options) {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
     process.exit(1);
   }
 
@@ -112,7 +112,7 @@ async function dbCreate(options) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
     } else if (error.response && error.response.detail) {
       console.log(chalk.red(`\n✗ ${error.response.detail}\n`));
     } else {
@@ -134,7 +134,7 @@ async function dbList() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
     process.exit(1);
   }
 
@@ -152,7 +152,7 @@ async function dbList() {
     
     if (response.count === 0) {
       console.log(chalk.yellow('No databases found'));
-      console.log(chalk.cyan('\nCreate one with:'), chalk.white('orca db create --postgres'));
+      console.log(chalk.cyan('\nCreate one with:'), chalk.white('orcapt db create --postgres'));
     } else {
       console.log(chalk.green(`✓ Found ${response.count} database${response.count > 1 ? 's' : ''}`));
       console.log(chalk.cyan('============================================================\n'));
@@ -172,7 +172,7 @@ async function dbList() {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
     } else if (error.response && error.response.detail) {
       console.log(chalk.red(`\n✗ ${error.response.detail}\n`));
     } else {
@@ -188,7 +188,7 @@ async function dbList() {
 async function dbRemove(databaseName) {
   if (!databaseName) {
     console.log(chalk.red('\n✗ Database name is required'));
-    console.log(chalk.cyan('Usage:'), chalk.white('orca db remove <database-name>\n'));
+    console.log(chalk.cyan('Usage:'), chalk.white('orcapt db remove <database-name>\n'));
     process.exit(1);
   }
 
@@ -200,7 +200,7 @@ async function dbRemove(databaseName) {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
     process.exit(1);
   }
 
@@ -228,7 +228,7 @@ async function dbRemove(databaseName) {
     
     if (error.statusCode === 401) {
       console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orca login\n'));
+      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
     } else if (error.statusCode === 404) {
       console.log(chalk.red(`\n✗ Database '${databaseName}' not found or doesn't belong to your workspace\n`));
     } else if (error.response && error.response.detail) {

@@ -1,5 +1,5 @@
 /**
- * Kickstart command for Node.js - Quick setup for a new Orca Node.js project
+ * Kickstart command for Node.js - Quick setup for a new Orcapt Node.js project
  */
 
 const path = require('path');
@@ -85,7 +85,7 @@ async function checkPrerequisites() {
  * Clone repository
  */
 async function cloneRepository(directory) {
-  const spinner = ora('Cloning Orca Node.js starter kit from GitHub...').start();
+  const spinner = ora('Cloning Orcapt Node.js starter kit from GitHub...').start();
   
   try {
     const git = simpleGit();
@@ -105,9 +105,9 @@ async function fixPackageJson(projectPath) {
   const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
   
   // Replace local file reference with npm package
-  if (packageJson.dependencies && packageJson.dependencies['@orca/sdk']) {
-    if (packageJson.dependencies['@orca/sdk'].startsWith('file:')) {
-      packageJson.dependencies['@orca/sdk'] = '^1.0.0';
+  if (packageJson.dependencies && packageJson.dependencies['@orcapt/sdk']) {
+    if (packageJson.dependencies['@orcapt/sdk'].startsWith('file:')) {
+      packageJson.dependencies['@orcapt/sdk'] = '^1.0.0';
     }
   }
   
@@ -254,16 +254,16 @@ async function startAgent(projectPath, agentPort) {
 }
 
 /**
- * Start Orca-UI frontend server
+ * Start Orcapt-UI frontend server
  */
 async function startUI(projectPath, port, agentPort) {
-  const spinner = ora(`Starting Orca-UI server on port ${port}...`).start();
+  const spinner = ora(`Starting Orcapt-UI server on port ${port}...`).start();
   
   try {
     const uiProcess = spawnBackground('npx', [
       '-y',
-      '@orca/ui',
-      'orca',
+      '@orcapt/ui',
+      'orcapt',
       `--port=${port}`,
       `--agent-port=${agentPort}`
     ], {
@@ -275,13 +275,13 @@ async function startUI(projectPath, port, agentPort) {
 
     // Check if process is still running
     if (uiProcess.exitCode !== null) {
-      throw new Error('Orca-UI process exited immediately');
+      throw new Error('Orcapt-UI process exited immediately');
     }
 
-    spinner.succeed(chalk.green(`Orca-UI started (PID: ${uiProcess.pid})`));
+    spinner.succeed(chalk.green(`Orcapt-UI started (PID: ${uiProcess.pid})`));
     return uiProcess;
   } catch (error) {
-    spinner.fail('Failed to start Orca-UI');
+    spinner.fail('Failed to start Orcapt-UI');
     throw error;
   }
 }
@@ -293,7 +293,7 @@ async function kickstartNode(options) {
   try {
     const { directory, port, agentPort, start } = options;
     
-    print.title('🚀 Orca Kickstart - Node.js');
+    print.title('🚀 Orcapt Kickstart - Node.js');
 
     // Check prerequisites
     await checkPrerequisites();
@@ -342,7 +342,7 @@ async function kickstartNode(options) {
       {
         type: 'confirm',
         name: 'start',
-        message: 'Do you want to start the agent and Orca-UI servers now?',
+        message: 'Do you want to start the agent and Orcapt-UI servers now?',
         default: true
       }
     ]).then(answers => answers.start) : false;
@@ -353,7 +353,7 @@ async function kickstartNode(options) {
       console.log(chalk.gray(`  cd ${directory}`));
       console.log(chalk.gray(`  node main.js --dev`));
       console.log(chalk.gray(`  # In another terminal:`));
-      console.log(chalk.gray(`  npx -y @orca/ui orca --port=${port} --agent-port=${agentPort}`));
+      console.log(chalk.gray(`  npx -y @orcapt/ui orcapt --port=${port} --agent-port=${agentPort}`));
       console.log();
       return;
     }
@@ -368,8 +368,8 @@ async function kickstartNode(options) {
     const uiProcess = await startUI(projectPath, port, agentPort);
 
     // Display success message
-    print.title('🎉 Orca is running!');
-    print.url('Orca-UI', `http://localhost:${port}`);
+    print.title('🎉 Orcapt is running!');
+    print.url('Orcapt-UI', `http://localhost:${port}`);
     print.url('Agent   ', `http://localhost:${agentPort}`);
     console.log();
     print.warning('Press Ctrl+C to stop both servers');
@@ -409,7 +409,7 @@ async function kickstartNode(options) {
 
     uiProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
-        print.error('Orca-UI stopped unexpectedly');
+        print.error('Orcapt-UI stopped unexpectedly');
         if (agentProcess && !agentProcess.killed) {
           agentProcess.kill();
         }

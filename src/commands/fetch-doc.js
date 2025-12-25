@@ -1,6 +1,6 @@
 /**
  * Fetch Documentation Command
- * Downloads Orca SDK documentation based on project type
+ * Downloads orcapt SDK documentation based on project type
  */
 
 const fs = require('fs').promises;
@@ -131,7 +131,7 @@ async function ensureDocsDirectory() {
  * @returns {Promise<void>}
  */
 async function downloadDocumentation(type) {
-  const spinner = ora(`Downloading Orca ${type === 'python' ? 'Python' : 'Node.js'} SDK documentation...`).start();
+  const spinner = ora(`Downloading orcapt ${type === 'python' ? 'Python' : 'Node.js'} SDK documentation...`).start();
   
   try {
     const docsPath = await ensureDocsDirectory();
@@ -163,7 +163,7 @@ async function downloadDocumentation(type) {
 async function fetchDoc() {
   try {
     console.log(chalk.cyan('\n============================================================'));
-    console.log(chalk.cyan('📚 Orca - Fetch Documentation'));
+    console.log(chalk.cyan('📚 orcapt - Fetch Documentation'));
     console.log(chalk.cyan('============================================================\n'));
     
     // Check if we're in a project root

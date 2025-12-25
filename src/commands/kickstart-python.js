@@ -1,5 +1,5 @@
 /**
- * Kickstart command - Quick setup for a new Orca project
+ * Kickstart command - Quick setup for a new Orcapt project
  */
 
 const path = require('path');
@@ -91,7 +91,7 @@ async function checkPrerequisites() {
  * Clone repository
  */
 async function cloneRepository(directory) {
-  const spinner = ora('Cloning Orca starter kit from GitHub...').start();
+  const spinner = ora('Cloning Orcapt starter kit from GitHub...').start();
   
   try {
     const git = simpleGit();
@@ -150,7 +150,6 @@ async function startBackend(projectPath, agentPort) {
   try {
     const venvPaths = getVenvPaths();
     const pythonPath = path.join(projectPath, venvPaths.python);
-    
     const backendProcess = spawnBackground(pythonPath, ['main.py', '--dev'], {
       cwd: projectPath,
       env: { ...process.env, PORT: agentPort }
@@ -176,7 +175,7 @@ async function startBackend(projectPath, agentPort) {
  * Start frontend server
  */
 async function startFrontend(projectPath, port, agentPort) {
-  const spinner = ora(`Starting Orca-UI server on port ${port}...`).start();
+  const spinner = ora(`Starting Orcapt-UI server on port ${port}...`).start();
   
   try {
     const tryStart = async (pkgOrBin) => {
@@ -197,16 +196,16 @@ async function startFrontend(projectPath, port, agentPort) {
     let frontendProcess;
     try {
       // Prefer new bin name
-      frontendProcess = await tryStart('orca-ui');
+      frontendProcess = await tryStart('orcapt-ui');
     } catch (_) {
       // Fallback to package name
-      frontendProcess = await tryStart('@orca/ui');
+      frontendProcess = await tryStart('@orcapt/ui');
     }
 
-    spinner.succeed(chalk.green(`Orca-UI started (PID: ${frontendProcess.pid})`));
+    spinner.succeed(chalk.green(`Orcapt-UI started (PID: ${frontendProcess.pid})`));
     return frontendProcess;
   } catch (error) {
-    spinner.fail('Failed to start Orca-UI');
+    spinner.fail('Failed to start Orcapt-UI');
     throw error;
   }
 }
@@ -218,7 +217,7 @@ async function kickstart(options) {
   try {
     const { directory, port, agentPort, start } = options;
     
-    print.title('🚀 Orca Kickstart - Python');
+    print.title('🚀 Orcapt Kickstart - Python');
 
     // Check prerequisites
     const pythonCmd = await checkPrerequisites();
@@ -282,7 +281,7 @@ async function kickstart(options) {
       console.log(chalk.gray(`  ${getVenvPaths().activate}`));
       console.log(chalk.gray(`  python main.py --dev`));
       console.log(chalk.gray(`  # In another terminal:`));
-      console.log(chalk.gray(`  npx -y @orca/ui orca --port=${port} --agent-port=${agentPort}`));
+      console.log(chalk.gray(`  npx -y @orcapt/ui orca --port=${port} --agent-port=${agentPort}`));
       console.log();
       return;
     }
@@ -297,8 +296,8 @@ async function kickstart(options) {
     const frontendProcess = await startFrontend(projectPath, port, agentPort);
 
     // Display success message
-    print.title('🎉 Orca is running!');
-    print.url('Orca-UI', `http://localhost:${port}`);
+    print.title('🎉 Orcapt is running!');
+    print.url('Orcapt-UI', `http://localhost:${port}`);
     print.url('Agent   ', `http://localhost:${agentPort}`);
     console.log();
     print.warning('Press Ctrl+C to stop both servers');
@@ -338,7 +337,7 @@ async function kickstart(options) {
 
     frontendProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
-        print.error('Orca-UI stopped unexpectedly');
+        print.error('Orcapt-UI stopped unexpectedly');
         if (backendProcess && !backendProcess.killed) {
           backendProcess.kill();
         }
