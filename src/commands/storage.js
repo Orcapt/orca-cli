@@ -11,6 +11,7 @@ const https = require('https');
 const http = require('http');
 const { getCredentials } = require('./login');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
+const { handleError } = require('../utils/errorHandler');
 
 /**
  * Make API request to orcapt Deploy API
@@ -253,18 +254,7 @@ async function bucketCreate(bucketName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to create bucket'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 409) {
-        console.log(chalk.yellow('  Bucket name already exists for this workspace'));
-      } else if (error.statusCode === 422) {
-        console.log(chalk.yellow('  Invalid bucket name or parameters'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'Bucket creation');
     process.exit(1);
   }
 }
@@ -336,12 +326,7 @@ async function bucketList() {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to list buckets'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}\n`));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
+    handleError(error, 'Bucket listing');
     process.exit(1);
   }
 }
@@ -414,18 +399,7 @@ async function fileUpload(bucketName, localPath, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Upload failed'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  Bucket not found'));
-      } else if (error.statusCode === 413) {
-        console.log(chalk.yellow('  File too large (max 100MB)'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'File upload');
     process.exit(1);
   }
 }
@@ -504,16 +478,7 @@ async function fileDownload(bucketName, fileKey, localPath) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Download failed'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  File or bucket not found'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'File download');
     process.exit(1);
   }
 }
@@ -560,16 +525,7 @@ async function bucketInfo(bucketName) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to get bucket info'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  Bucket not found'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'Bucket info');
     process.exit(1);
   }
 }
@@ -604,20 +560,7 @@ async function bucketDelete(bucketName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to delete bucket'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  Bucket not found'));
-      } else if (error.statusCode === 400 && error.response.file_count) {
-        console.log(chalk.yellow(`  Bucket contains ${error.response.file_count} file(s)`));
-        console.log(chalk.cyan('  Use --force to delete anyway:'));
-        console.log(chalk.white('  '), chalk.yellow(`orcapt storage bucket delete ${bucketName} --force`));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'Bucket deletion');
     process.exit(1);
   }
 }
@@ -713,16 +656,7 @@ async function fileList(bucketName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to list files'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  Bucket not found'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'File listing');
     process.exit(1);
   }
 }
@@ -755,16 +689,7 @@ async function fileDelete(bucketName, fileKey) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to delete file'));
-
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  File or bucket not found'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
+    handleError(error, 'File deletion');
     process.exit(1);
   }
 }

@@ -335,6 +335,7 @@ lambdaCmd
   .command('invoke <function-name>')
   .description('Invoke Lambda function')
   .option('--payload <json>', 'JSON payload')
+  .option('--path <path>', 'HTTP path to invoke (e.g., health, api/v1/users)')
   .action((functionName, options) => {
     requireAuth('lambda invoke');
     lambdaInvoke(functionName, options);
@@ -345,6 +346,8 @@ lambdaCmd
   .description('Get Lambda function logs')
   .option('--tail', 'Stream logs in real-time')
   .option('--since <time>', 'Show logs since (e.g., 1h, 30m)', '10m')
+  .option('--page <number>', 'Page number (default: 1)', '1')
+  .option('--per-page <number>', 'Number of logs per page (default: 100, max: 1000)', '100')
   .action((functionName, options) => {
     requireAuth('lambda logs');
     lambdaLogs(functionName, options);

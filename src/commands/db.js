@@ -9,6 +9,7 @@ const https = require('https');
 const http = require('http');
 const { getCredentials } = require('./login');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
+const { handleError } = require('../utils/errorHandler');
 
 /**
  * Make API request to orcapt Deploy API
@@ -109,15 +110,7 @@ async function dbCreate(options) {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to create database'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.response && error.response.detail) {
-      console.log(chalk.red(`\n✗ ${error.response.detail}\n`));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
+    handleError(error, 'Database creation');
     process.exit(1);
   }
 }
@@ -169,15 +162,7 @@ async function dbList() {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to list databases'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.response && error.response.detail) {
-      console.log(chalk.red(`\n✗ ${error.response.detail}\n`));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
+    handleError(error, 'Database listing');
     process.exit(1);
   }
 }
@@ -225,17 +210,7 @@ async function dbRemove(databaseName) {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to delete database'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red(`\n✗ Database '${databaseName}' not found or doesn't belong to your workspace\n`));
-    } else if (error.response && error.response.detail) {
-      console.log(chalk.red(`\n✗ ${error.response.detail}\n`));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
+    handleError(error, 'Database deletion');
     process.exit(1);
   }
 }

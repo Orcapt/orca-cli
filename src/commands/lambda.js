@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const { getCredentials } = require('./login');
 const { API_BASE_URL, API_ENDPOINTS } = require('../config');
+const { handleError } = require('../utils/errorHandler');
 const {
   checkDockerInstalled,
   checkDockerImage,
@@ -193,17 +194,7 @@ async function lambdaDeploy(functionName, options = {}) {
       });
     } catch (error) {
       spinner.fail(chalk.red('✗ Failed to request ECR credentials'));
-      console.log();
-      
-      if (error.statusCode) {
-        console.log(chalk.red('Status Code:'), error.statusCode);
-        console.log(chalk.red('Response:'), JSON.stringify(error.response, null, 2));
-      } else if (error.message) {
-        console.log(chalk.red('Error:'), error.message);
-      } else {
-        console.log(chalk.red('Error:'), error);
-      }
-      
+      handleError(error, 'ECR credentials request');
       console.log();
       console.log(chalk.yellow('💡 Troubleshooting tips:'));
       console.log(chalk.white('  1. Check if backend is running'));
@@ -289,22 +280,7 @@ async function lambdaDeploy(functionName, options = {}) {
 
   } catch (error) {
     console.log(chalk.red('\n✗ Deployment failed'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('Endpoint not found'));
-      console.log(chalk.yellow('The Lambda API may not be implemented yet.'));
-      console.log(chalk.cyan('See STORAGE_LAMBDA_ARCHITECTURE.md for details\n'));
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`Error: ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda deployment');
     process.exit(1);
   }
 }
@@ -360,21 +336,7 @@ async function lambdaList() {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to list functions'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('\n✗ Endpoint not found'));
-      console.log(chalk.yellow('The Lambda API may not be implemented yet.\n'));
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda listing');
     process.exit(1);
   }
 }
@@ -403,6 +365,10 @@ async function lambdaInvoke(functionName, options = {}) {
       process.exit(1);
     }
   }
+  
+  // Add path (default to 'health' if not provided)
+  const path = options.path || 'health';
+  console.log(chalk.white('Path:     '), chalk.yellow(path));
 
   const spinner = ora('Invoking function...').start();
 
@@ -410,11 +376,16 @@ async function lambdaInvoke(functionName, options = {}) {
     // Call backend API to invoke Lambda function
     const startTime = Date.now();
     const endpoint = API_ENDPOINTS.LAMBDA_INVOKE.replace('{functionName}', functionName);
+    const requestBody = { 
+      payload,
+      path: options.path || 'health' // Default path
+    };
+    
     const response = await makeApiRequest(
       'POST',
       endpoint,
       credentials,
-      { payload }
+      requestBody
     );
 
     const duration = Date.now() - startTime;
@@ -433,33 +404,43 @@ async function lambdaInvoke(functionName, options = {}) {
     }
 
     console.log(chalk.cyan('\nResponse:'));
-    console.log(chalk.white(JSON.stringify(response.response || response, null, 2)));
+    
+    // Parse and format the response nicely
+    const lambdaResponse = response.response || response;
+    
+    // If response has statusCode and body (API Gateway format)
+    if (lambdaResponse.statusCode && lambdaResponse.body) {
+      console.log(chalk.white('Status Code: '), chalk.green(lambdaResponse.statusCode));
+      
+      // Try to parse body as JSON
+      let bodyContent;
+      try {
+        bodyContent = JSON.parse(lambdaResponse.body);
+        console.log(chalk.white('\nBody:'));
+        console.log(chalk.green(JSON.stringify(bodyContent, null, 2)));
+      } catch (e) {
+        // If not JSON, show as string
+        console.log(chalk.white('\nBody:'));
+        console.log(chalk.green(lambdaResponse.body));
+      }
+      
+      // Show headers if available
+      if (lambdaResponse.headers && Object.keys(lambdaResponse.headers).length > 0) {
+        console.log(chalk.white('\nHeaders:'));
+        Object.entries(lambdaResponse.headers).forEach(([key, value]) => {
+          console.log(chalk.gray(`  ${key}: `), chalk.yellow(value));
+        });
+      }
+    } else {
+      // Regular response format
+      console.log(chalk.green(JSON.stringify(lambdaResponse, null, 2)));
+    }
 
     console.log(chalk.cyan('\n============================================================\n'));
 
   } catch (error) {
     spinner.fail(chalk.red('Invocation failed'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('\n✗ Function not found'));
-      console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
-    } else if (error.statusCode === 500) {
-      console.log(chalk.red('\n✗ Function execution error'));
-      if (error.response && error.response.error) {
-        console.log(chalk.yellow('Error:'), chalk.white(error.response.error));
-      }
-      console.log();
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda invocation');
     process.exit(1);
   }
 }
@@ -486,11 +467,24 @@ async function lambdaLogs(functionName, options = {}) {
 
   const spinner = ora('Fetching logs...').start();
   const endpoint = API_ENDPOINTS.LAMBDA_LOGS.replace('{functionName}', functionName);
+  
+  // Build query parameters for pagination
+  const queryParams = {};
+  if (options.page) {
+    queryParams.page = parseInt(options.page) || 1;
+  }
+  if (options.perPage) {
+    queryParams.per_page = Math.min(parseInt(options.perPage) || 100, 1000);
+  }
+  
+  const queryString = new URLSearchParams(queryParams).toString();
+  const fullEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
+  
   try {
     // Call backend API to get logs
     const response = await makeApiRequest(
       'GET',
-     endpoint,
+     fullEndpoint,
       credentials
     );
 
@@ -498,12 +492,37 @@ async function lambdaLogs(functionName, options = {}) {
 
     console.log(chalk.cyan('\n============================================================'));
     
+    // Show sync statistics
+    if (response.synced_from_cloudwatch !== undefined || response.skipped_duplicates !== undefined) {
+      console.log(chalk.cyan('📊 Sync Statistics:'));
+      if (response.total_cloudwatch_logs !== undefined) {
+        console.log(chalk.white('  CloudWatch logs: '), chalk.yellow(response.total_cloudwatch_logs));
+      }
+      if (response.synced_from_cloudwatch !== undefined) {
+        console.log(chalk.white('  Newly synced:   '), chalk.green(response.synced_from_cloudwatch));
+      }
+      if (response.skipped_duplicates !== undefined) {
+        console.log(chalk.white('  Skipped (dup):  '), chalk.gray(response.skipped_duplicates));
+      }
+      console.log();
+    }
+    
     if (!response.logs || response.logs.length === 0) {
-      console.log(chalk.yellow('No logs found'));
+      console.log(chalk.yellow('No logs found in database'));
       console.log(chalk.cyan('\nTry invoking the function first:'));
       console.log(chalk.white('  orcapt lambda invoke'), chalk.cyan(functionName));
     } else {
-      console.log(chalk.green(`✓ Found ${response.logs.length} log entries`));
+      // Show pagination info
+      if (response.pagination) {
+        const pagination = response.pagination;
+        console.log(chalk.cyan('📄 Pagination:'));
+        console.log(chalk.white('  Page:         '), chalk.yellow(`${pagination.current_page} / ${pagination.total_pages}`));
+        console.log(chalk.white('  Per page:     '), chalk.yellow(pagination.per_page));
+        console.log(chalk.white('  Total logs:   '), chalk.yellow(pagination.total));
+        console.log();
+      }
+      
+      console.log(chalk.green(`✓ Showing ${response.logs.length} log entries (page ${response.pagination?.current_page || 1})`));
       console.log(chalk.cyan('============================================================\n'));
       
       response.logs.forEach(log => {
@@ -521,6 +540,21 @@ async function lambdaLogs(functionName, options = {}) {
           chalk.white(log.message)
         );
       });
+      
+      // Show pagination navigation hints
+      if (response.pagination) {
+        const pagination = response.pagination;
+        console.log(chalk.cyan('\n============================================================'));
+        if (pagination.has_prev_page) {
+          console.log(chalk.white('  Previous page: '), chalk.cyan(`orcapt lambda logs ${functionName} --page ${pagination.current_page - 1}`));
+        }
+        if (pagination.has_next_page) {
+          console.log(chalk.white('  Next page:     '), chalk.cyan(`orcapt lambda logs ${functionName} --page ${pagination.current_page + 1}`));
+        }
+        if (!pagination.has_prev_page && !pagination.has_next_page) {
+          console.log(chalk.gray('  (No more pages)'));
+        }
+      }
     }
     
     console.log(chalk.cyan('\n============================================================'));
@@ -534,21 +568,7 @@ async function lambdaLogs(functionName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to fetch logs'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('\n✗ Function not found'));
-      console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda logs');
     process.exit(1);
   }
 }
@@ -595,24 +615,7 @@ async function lambdaRemove(functionName) {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to remove function'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('\n✗ Function not found'));
-      console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
-    } else if (error.statusCode === 409) {
-      console.log(chalk.red('\n✗ Conflict'));
-      console.log(chalk.yellow('Function may be currently in use. Please try again later.\n'));
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda removal');
     process.exit(1);
   }
 }
@@ -706,21 +709,7 @@ async function lambdaInfo(functionName) {
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to fetch function details'));
-    
-    if (error.statusCode === 401) {
-      console.log(chalk.red('\n✗ Authentication failed'));
-      console.log(chalk.yellow('Your session may have expired. Please run:'), chalk.white('orcapt login\n'));
-    } else if (error.statusCode === 404) {
-      console.log(chalk.red('\n✗ Function not found'));
-      console.log(chalk.yellow(`Function '${functionName}' does not exist or doesn't belong to your workspace.\n`));
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log(chalk.red('\n✗ Connection refused'));
-      console.log(chalk.yellow('Cannot connect to Orcapt API:'), chalk.white(API_BASE_URL));
-      console.log(chalk.cyan('Make sure the backend is running.\n'));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    
+    handleError(error, 'Lambda info');
     process.exit(1);
   }
 }
