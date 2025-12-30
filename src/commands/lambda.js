@@ -592,12 +592,12 @@ async function lambdaRemove(functionName) {
   console.log(chalk.yellow('ECR repository will be kept for potential rollback.\n'));
 
   const spinner = ora('Removing function...').start();
-
+  const endpoint = API_ENDPOINTS.LAMBDA_DELETE.replace('{functionName}', functionName);
   try {
     // Call backend API to delete Lambda function
     const response = await makeApiRequest(
       'DELETE',
-      `${API_ENDPOINTS.LAMBDA_DELETE}/${functionName}`,
+      endpoint,
       credentials
     );
 
@@ -631,12 +631,12 @@ async function lambdaInfo(functionName) {
   const credentials = requireAuth();
 
   const spinner = ora('Fetching function details...').start();
-
+  const endpoint = API_ENDPOINTS.LAMBDA_INFO.replace('{functionName}', functionName);
   try {
     // Call backend API to get function details
     const response = await makeApiRequest(
       'GET',
-      `${API_ENDPOINTS.LAMBDA_INFO}/${functionName}`,
+      endpoint,
       credentials
     );
 
