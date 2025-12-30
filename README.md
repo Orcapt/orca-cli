@@ -409,22 +409,6 @@ orcapt storage download my-bucket file.txt ./downloads/
 orcapt storage delete my-bucket file.txt
 ```
 
-#### Permission Management
-
-```bash
-# Add permission
-orcapt storage permission add my-bucket \
-  --target-type=user \
-  --target-id=user123 \
-  --read \
-  --write
-
-# List permissions
-orcapt storage permission list my-bucket
-```
-
----
-
 ### 🗄️ Database Commands
 
 Create and manage PostgreSQL databases.

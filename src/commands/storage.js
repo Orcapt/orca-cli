@@ -79,31 +79,31 @@ function uploadFileToApi(endpoint, credentials, filePath, bucketName, options = 
     const fileStream = fs.createReadStream(filePath);
     const fileName = path.basename(filePath);
     const boundary = `----FormBoundary${Date.now()}`;
-    
+
     const folderPath = options.folder || '';
-    
+
     // Build multipart form data
     let formData = '';
-    
+
     // Add folder_path field
     if (folderPath) {
       formData += `--${boundary}\r\n`;
       formData += `Content-Disposition: form-data; name="folder_path"\r\n\r\n`;
       formData += `${folderPath}\r\n`;
     }
-    
+
     // Add visibility field
     if (options.visibility) {
       formData += `--${boundary}\r\n`;
       formData += `Content-Disposition: form-data; name="visibility"\r\n\r\n`;
       formData += `${options.visibility}\r\n`;
     }
-    
+
     // Add generate_url field
     formData += `--${boundary}\r\n`;
     formData += `Content-Disposition: form-data; name="generate_url"\r\n\r\n`;
     formData += `true\r\n`;
-    
+
     // Add file field header
     formData += `--${boundary}\r\n`;
     formData += `Content-Disposition: form-data; name="file"; filename="${fileName}"\r\n`;
@@ -206,7 +206,7 @@ async function bucketCreate(bucketName, options = {}) {
   console.log(chalk.cyan('============================================================\n'));
 
   const credentials = requireAuth();
-  
+
   console.log(chalk.white('Bucket:     '), chalk.yellow(bucketName));
   console.log(chalk.white('Workspace:  '), chalk.yellow(credentials.workspace));
   console.log(chalk.white('Visibility: '), chalk.yellow(options.public ? 'public' : 'private'));
@@ -237,7 +237,7 @@ async function bucketCreate(bucketName, options = {}) {
     );
 
     spinner.succeed(chalk.green('✓ Bucket created successfully!'));
-    
+
     console.log(chalk.cyan('\n📦 Bucket Details:'));
     console.log(chalk.white('  Name:       '), chalk.yellow(response.bucket.bucket_name));
     console.log(chalk.white('  AWS Bucket: '), chalk.gray(response.bucket.aws_bucket_name));
@@ -245,7 +245,7 @@ async function bucketCreate(bucketName, options = {}) {
     console.log(chalk.white('  Status:     '), chalk.green(response.bucket.status));
     console.log(chalk.white('  Visibility: '), chalk.yellow(response.bucket.visibility));
     console.log(chalk.white('  Encryption: '), chalk.yellow(response.bucket.encryption_enabled ? 'Enabled' : 'Disabled'));
-    
+
     console.log(chalk.cyan('\n💡 Next Steps:'));
     console.log(chalk.white('  Upload file:  '), chalk.yellow(`orcapt storage upload ${bucketName} <file-path>`));
     console.log(chalk.white('  List files:   '), chalk.yellow(`orcapt storage files ${bucketName}`));
@@ -253,7 +253,7 @@ async function bucketCreate(bucketName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to create bucket'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 409) {
@@ -316,7 +316,7 @@ async function bucketList() {
       const files = String(bucket.file_count).padEnd(10);
       const size = bucket.total_size.padEnd(15);
       const visibility = bucket.visibility.padEnd(15);
-      const status = bucket.status === 'active' 
+      const status = bucket.status === 'active'
         ? chalk.green(bucket.status.padEnd(15))
         : chalk.yellow(bucket.status.padEnd(15));
       const created = new Date(bucket.created_at).toLocaleDateString();
@@ -336,7 +336,7 @@ async function bucketList() {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to list buckets'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}\n`));
     } else {
@@ -370,11 +370,11 @@ async function fileUpload(bucketName, localPath, options = {}) {
   console.log(chalk.white('File:       '), chalk.yellow(fileName));
   console.log(chalk.white('Local Path: '), chalk.gray(localPath));
   console.log(chalk.white('Size:       '), chalk.yellow(`${fileSizeMB} MB`));
-  
+
   if (options.folder) {
     console.log(chalk.white('Folder:     '), chalk.yellow(options.folder));
   }
-  
+
   console.log(chalk.white('Visibility: '), chalk.yellow(options.public ? 'public' : 'private'));
 
   const spinner = ora('Uploading file...').start();
@@ -394,19 +394,19 @@ async function fileUpload(bucketName, localPath, options = {}) {
     );
 
     spinner.succeed(chalk.green('✓ File uploaded successfully!'));
-    
+
     console.log(chalk.cyan('\n📄 File Details:'));
     console.log(chalk.white('  Name:       '), chalk.yellow(response.file.file_name));
     console.log(chalk.white('  Key:        '), chalk.gray(response.file.file_key));
     console.log(chalk.white('  Size:       '), chalk.yellow(response.file.file_size));
     console.log(chalk.white('  Type:       '), chalk.yellow(response.file.mime_type));
     console.log(chalk.white('  Visibility: '), chalk.yellow(response.file.visibility));
-    
+
     if (response.file.download_url) {
       console.log(chalk.cyan('\n🔗 Download URL (valid for 60 minutes):'));
       console.log(chalk.gray(response.file.download_url));
     }
-    
+
     console.log(chalk.cyan('\n💡 Next Steps:'));
     console.log(chalk.white('  List files:   '), chalk.yellow(`orcapt storage files ${bucketName}`));
     console.log(chalk.white('  Download:     '), chalk.yellow(`orcapt storage download ${bucketName} ${response.file.file_key}`));
@@ -414,7 +414,7 @@ async function fileUpload(bucketName, localPath, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Upload failed'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -469,7 +469,7 @@ async function fileDownload(bucketName, fileKey, localPath) {
       const httpModule = isHttps ? https : http;
 
       const fileWriter = fs.createWriteStream(outputPath);
-      
+
       httpModule.get(downloadUrl, (res) => {
         if (res.statusCode !== 200) {
           reject(new Error(`Failed to download: ${res.statusCode}`));
@@ -483,18 +483,18 @@ async function fileDownload(bucketName, fileKey, localPath) {
           resolve();
         });
       }).on('error', (err) => {
-        fs.unlink(outputPath, () => {});
+        fs.unlink(outputPath, () => { });
         reject(err);
       });
 
       fileWriter.on('error', (err) => {
-        fs.unlink(outputPath, () => {});
+        fs.unlink(outputPath, () => { });
         reject(err);
       });
     });
 
     spinner.succeed(chalk.green('✓ File downloaded successfully!'));
-    
+
     console.log(chalk.cyan('\n📄 File Details:'));
     console.log(chalk.white('  Name:     '), chalk.yellow(response.file.file_name));
     console.log(chalk.white('  Size:     '), chalk.yellow(formatBytes(response.file.file_size_bytes)));
@@ -504,7 +504,7 @@ async function fileDownload(bucketName, fileKey, localPath) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Download failed'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -550,17 +550,17 @@ async function bucketInfo(bucketName) {
     console.log(chalk.white('  Total Size:    '), chalk.cyan(bucket.total_size));
     console.log(chalk.white('  Versioning:    '), bucket.versioning_enabled ? chalk.green('Enabled') : chalk.gray('Disabled'));
     console.log(chalk.white('  Encryption:    '), bucket.encryption_enabled ? chalk.green(`Enabled (${bucket.encryption_type})`) : chalk.gray('Disabled'));
-    
+
     if (bucket.description) {
       console.log(chalk.white('  Description:   '), chalk.gray(bucket.description));
     }
-    
+
     console.log(chalk.white('  Created:       '), chalk.gray(new Date(bucket.created_at).toLocaleString()));
     console.log('');
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to get bucket info'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -586,7 +586,7 @@ async function bucketDelete(bucketName, options = {}) {
 
   console.log(chalk.white('Bucket:   '), chalk.yellow(bucketName));
   console.log(chalk.white('Workspace:'), chalk.yellow(credentials.workspace));
-  
+
   if (options.force) {
     console.log(chalk.yellow('\n⚠️  Force delete enabled - all files will be deleted'));
   }
@@ -594,9 +594,9 @@ async function bucketDelete(bucketName, options = {}) {
   const spinner = ora('Deleting bucket...').start();
 
   try {
-    const endpoint = API_ENDPOINTS.STORAGE_BUCKET_LIST.replace('/list', `/${bucketName}`) + 
-                    (options.force ? '?force=true' : '');
-    
+    const endpoint = API_ENDPOINTS.STORAGE_BUCKET_LIST.replace('/list', `/${bucketName}`) +
+      (options.force ? '?force=true' : '');
+
     await makeApiRequest('DELETE', endpoint, credentials);
 
     spinner.succeed(chalk.green('✓ Bucket deleted successfully!'));
@@ -604,7 +604,7 @@ async function bucketDelete(bucketName, options = {}) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to delete bucket'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -642,7 +642,7 @@ async function fileList(bucketName, options = {}) {
   try {
     let endpoint = API_ENDPOINTS.STORAGE_FILE_LIST.replace('{bucketName}', bucketName);
     const params = [];
-    
+
     if (options.folder) {
       params.push(`folder_path=${encodeURIComponent(options.folder)}`);
     }
@@ -652,7 +652,7 @@ async function fileList(bucketName, options = {}) {
     if (options.perPage) {
       params.push(`per_page=${options.perPage}`);
     }
-    
+
     if (params.length > 0) {
       endpoint += '?' + params.join('&');
     }
@@ -681,12 +681,12 @@ async function fileList(bucketName, options = {}) {
     console.log(chalk.white('─'.repeat(120)));
 
     response.files.forEach(file => {
-      const name = (file.file_name.length > 38 
-        ? file.file_name.substring(0, 35) + '...' 
+      const name = (file.file_name.length > 38
+        ? file.file_name.substring(0, 35) + '...'
         : file.file_name).padEnd(40);
       const size = file.file_size.padEnd(15);
-      const type = (file.mime_type.length > 18 
-        ? file.mime_type.substring(0, 15) + '...' 
+      const type = (file.mime_type.length > 18
+        ? file.mime_type.substring(0, 15) + '...'
         : file.mime_type).padEnd(20);
       const downloads = String(file.download_count).padEnd(12);
       const uploaded = new Date(file.uploaded_at).toLocaleDateString();
@@ -701,19 +701,19 @@ async function fileList(bucketName, options = {}) {
     });
 
     console.log(chalk.white('─'.repeat(120)));
-    
+
     if (response.pagination.last_page > 1) {
       console.log(chalk.gray(`Page ${response.pagination.current_page} of ${response.pagination.last_page}`));
       if (response.pagination.current_page < response.pagination.last_page) {
         console.log(chalk.cyan('Next page: '), chalk.yellow(`orcapt storage files ${bucketName} --page ${response.pagination.current_page + 1}`));
       }
     }
-    
+
     console.log('');
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to list files'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -755,7 +755,7 @@ async function fileDelete(bucketName, fileKey) {
 
   } catch (error) {
     spinner.fail(chalk.red('✗ Failed to delete file'));
-    
+
     if (error.response) {
       console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
       if (error.statusCode === 404) {
@@ -769,133 +769,6 @@ async function fileDelete(bucketName, fileKey) {
   }
 }
 
-/**
- * Permission Add Command
- */
-async function permissionAdd(bucketName, options = {}) {
-  console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('🔐 Adding Permission'));
-  console.log(chalk.cyan('============================================================\n'));
-
-  const credentials = requireAuth();
-
-  console.log(chalk.white('Bucket:       '), chalk.yellow(bucketName));
-  console.log(chalk.white('Target Type:  '), chalk.yellow(options.targetType || 'user'));
-  console.log(chalk.white('Target ID:    '), chalk.yellow(options.targetId || 'N/A'));
-  console.log(chalk.white('Resource Type:'), chalk.yellow(options.resourceType || 'bucket'));
-
-  const spinner = ora('Adding permission...').start();
-
-  try {
-    const requestBody = {
-      target_type: options.targetType || 'user',
-      target_id: options.targetId,
-      resource_type: options.resourceType || 'bucket',
-      resource_path: options.resourcePath || null,
-      can_read: options.read || false,
-      can_write: options.write || false,
-      can_delete: options.delete || false,
-      can_list: options.list || false,
-      valid_until: options.validUntil || null,
-      reason: options.reason || null
-    };
-
-    const endpoint = API_ENDPOINTS.STORAGE_PERMISSION_ADD
-      .replace('{bucketName}', bucketName);
-
-    const response = await makeApiRequest('POST', endpoint, credentials, requestBody);
-
-    spinner.succeed(chalk.green('✓ Permission added successfully!'));
-    
-    console.log(chalk.cyan('\n🔐 Permission Details:'));
-    console.log(chalk.white('  ID:            '), chalk.yellow(response.permission.id));
-    console.log(chalk.white('  Target:        '), chalk.yellow(`${response.permission.target_type}:${response.permission.target_id || 'all'}`));
-    console.log(chalk.white('  Resource:      '), chalk.yellow(`${response.permission.resource_type}:${response.permission.resource_path || 'all'}`));
-    console.log(chalk.white('  Permissions:   '), chalk.green(response.permission.permissions.join(', ')));
-    
-    if (response.permission.valid_until) {
-      console.log(chalk.white('  Valid Until:   '), chalk.gray(new Date(response.permission.valid_until).toLocaleString()));
-    }
-    
-    console.log('');
-
-  } catch (error) {
-    spinner.fail(chalk.red('✗ Failed to add permission'));
-    
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}`));
-      if (error.statusCode === 404) {
-        console.log(chalk.yellow('  Bucket not found'));
-      } else if (error.statusCode === 422) {
-        console.log(chalk.yellow('  Invalid permission parameters'));
-      }
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}`));
-    }
-    console.log('');
-    process.exit(1);
-  }
-}
-
-/**
- * Permission List Command
- */
-async function permissionList(bucketName) {
-  console.log(chalk.cyan('\n============================================================'));
-  console.log(chalk.cyan('🔐 Listing Permissions'));
-  console.log(chalk.cyan('============================================================\n'));
-
-  const credentials = requireAuth();
-  console.log(chalk.white('Bucket:'), chalk.yellow(bucketName));
-
-  const spinner = ora('Fetching permissions...').start();
-
-  try {
-    const endpoint = API_ENDPOINTS.STORAGE_PERMISSION_LIST
-      .replace('{bucketName}', bucketName);
-
-    const response = await makeApiRequest('GET', endpoint, credentials);
-
-    spinner.succeed(chalk.green(`✓ Found ${response.count} permission(s)`));
-
-    if (response.count === 0) {
-      console.log(chalk.yellow('\n📭 No permissions found'));
-      console.log(chalk.cyan('\n💡 Add a permission:'));
-      console.log(chalk.white('  '), chalk.yellow(`orcapt storage permission add ${bucketName} --target-type user --target-id USER_ID --read`));
-      console.log('');
-      return;
-    }
-
-    console.log('');
-    response.permissions.forEach(perm => {
-      const statusIcon = perm.is_valid ? '✓' : '✗';
-      const statusColor = perm.is_valid ? chalk.green : chalk.red;
-      
-      console.log(statusColor(`${statusIcon} Permission #${perm.id}`));
-      console.log(chalk.white('  Target:     '), chalk.yellow(`${perm.target_type}:${perm.target_id || 'all'}`));
-      console.log(chalk.white('  Resource:   '), chalk.yellow(`${perm.resource_type}:${perm.resource_path || 'all'}`));
-      console.log(chalk.white('  Actions:    '), chalk.green(perm.permissions.join(', ')));
-      console.log(chalk.white('  Status:     '), statusColor(perm.status));
-      
-      if (perm.valid_until) {
-        console.log(chalk.white('  Valid Until:'), chalk.gray(new Date(perm.valid_until).toLocaleString()));
-      }
-      
-      console.log('');
-    });
-
-  } catch (error) {
-    spinner.fail(chalk.red('✗ Failed to list permissions'));
-    
-    if (error.response) {
-      console.log(chalk.red(`\n✗ ${error.response.message || 'Unknown error'}\n`));
-    } else {
-      console.log(chalk.red(`\n✗ ${error.message}\n`));
-    }
-    process.exit(1);
-  }
-}
-
 module.exports = {
   bucketCreate,
   bucketList,
@@ -904,8 +777,6 @@ module.exports = {
   fileUpload,
   fileDownload,
   fileList,
-  fileDelete,
-  permissionAdd,
-  permissionList
+  fileDelete
 };
 

@@ -42,9 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `orca storage download` - Download files from buckets
   - `orca storage files` - List files in buckets
   - `orca storage delete` - Delete files from buckets
-- **Permission Management**:
-  - `orca storage permission add` - Add bucket permissions
-  - `orca storage permission list` - List bucket permissions
 
 #### Database Management
 

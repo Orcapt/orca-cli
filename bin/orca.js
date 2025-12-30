@@ -15,17 +15,15 @@ const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
 const fetchDoc = require('../src/commands/fetch-doc');
-const { 
-  bucketCreate, 
-  bucketList, 
+const {
+  bucketCreate,
+  bucketList,
   bucketInfo,
   bucketDelete,
-  fileUpload, 
+  fileUpload,
   fileDownload,
   fileList,
-  fileDelete,
-  permissionAdd,
-  permissionList
+  fileDelete
 } = require('../src/commands/storage');
 const { lambdaDeploy, lambdaList, lambdaInvoke, lambdaLogs, lambdaRemove, lambdaInfo } = require('../src/commands/lambda');
 
@@ -296,36 +294,7 @@ storageCmd
     fileDelete(bucket, fileKey);
   });
 
-// Permission commands
-const permissionCmd = storageCmd
-  .command('permission')
-  .description('Manage bucket permissions');
-
-permissionCmd
-  .command('add <bucket>')
-  .description('Add permission to bucket')
-  .option('--target-type <type>', 'Target type (user, workspace, public, api_key)', 'user')
-  .option('--target-id <id>', 'Target ID (user ID, workspace ID, etc.)')
-  .option('--resource-type <type>', 'Resource type (bucket, folder, file)', 'bucket')
-  .option('--resource-path <path>', 'Resource path (for folder/file permissions)')
-  .option('--read', 'Grant read permission', false)
-  .option('--write', 'Grant write permission', false)
-  .option('--delete', 'Grant delete permission', false)
-  .option('--list', 'Grant list permission', false)
-  .option('--valid-until <date>', 'Permission expiry date (ISO 8601)')
-  .option('--reason <text>', 'Reason for granting permission')
-  .action((bucket, options) => {
-    requireAuth('storage permission add');
-    permissionAdd(bucket, options);
-  });
-
-permissionCmd
-  .command('list <bucket>')
-  .description('List bucket permissions')
-  .action((bucket) => {
-    requireAuth('storage permission list');
-    permissionList(bucket);
-  });
+// Permission commands removed as per user request
 
 // Ship command - Deploy Docker images to Lambda
 program
