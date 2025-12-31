@@ -15,7 +15,7 @@ const API_ENDPOINTS = {
   // Database
   DB_CREATE: '/api/v1/db/create',
   DB_LIST: '/api/v1/db/list',
-  DB_DELETE: '/api/v1/db/delete-schema',
+  DB_DELETE: '/api/v1/db/delete',
   
   // Storage
   STORAGE_BUCKET_CREATE: '/api/v1/storage/bucket/create',
