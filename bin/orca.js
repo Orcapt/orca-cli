@@ -27,6 +27,7 @@ const {
   fileDelete
 } = require('../src/commands/storage');
 const { lambdaDeploy, lambdaList, lambdaInvoke, lambdaLogs, lambdaRemove, lambdaInfo } = require('../src/commands/lambda');
+const { ec2Deploy, ec2Status, ec2Logs } = require('../src/commands/ship-ec2');
 
 // Read version from package.json
 const packageJson = JSON.parse(
@@ -345,6 +346,44 @@ shipCmd
 const shipLambdaCmd = shipCmd
   .command('lambda')
   .description('Manage shipped AWS Lambda functions');
+
+const shipEc2Cmd = shipCmd
+  .command('ec2')
+  .description('Manage EC2/Hetzner Docker deployments');
+
+shipEc2Cmd
+  .command('deploy <app-name>')
+  .description('Queue Docker deployment for EC2/Hetzner runner')
+  .option('--image <image>', 'Docker image (registry/image:tag)')
+  .option('--push', 'Push local image to Docker Hub before deploy', false)
+  .option('--tag <tag>', 'Custom Docker tag when using --push')
+  .option('--container-name <name>', 'Container name to run')
+  .option('--port <host:container>', 'Port mapping (repeatable)', (val, memo) => { memo.push(val); return memo; }, [])
+  .option('--env <key=value>', 'Environment variable (repeatable)', (val, memo) => { memo.push(val); return memo; }, [])
+  .option('--env-file <path>', 'Path to .env file')
+  .option('--command <command>', 'Container startup command override')
+  .action((appName, options) => {
+    requireAuth('ship ec2 deploy');
+    ec2Deploy(appName, options);
+  });
+
+shipEc2Cmd
+  .command('status <deployment-id>')
+  .description('Get EC2 deployment status')
+  .action((deploymentId) => {
+    requireAuth('ship ec2 status');
+    ec2Status(deploymentId);
+  });
+
+shipEc2Cmd
+  .command('logs <deployment-id>')
+  .description('Get EC2 deployment logs')
+  .option('--page <number>', 'Page number', '1')
+  .option('--per-page <number>', 'Items per page', '100')
+  .action((deploymentId, options) => {
+    requireAuth('ship ec2 logs');
+    ec2Logs(deploymentId, options);
+  });
 
 shipLambdaCmd
   .command('list')

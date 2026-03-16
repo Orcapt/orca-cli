@@ -93,11 +93,11 @@ Common kickstart options:
 --no-start
 ```
 
-### Shipment and Lambda
+### Shipment (Lambda and EC2)
 
 `ship` is the shipment namespace.
 
-Deploy:
+Lambda deploy:
 
 ```bash
 orca ship deploy <function-name> --image <registry/image:tag> [options]
@@ -123,13 +123,43 @@ orca ship lambda logs <function-name> [--since <time>] [--page <n>] [--per-page 
 orca ship lambda remove <function-name>
 ```
 
-## Example: Deploy from a Dockerfile
+EC2/Hetzner deploy via runner:
+
+```bash
+orca ship ec2 deploy <app-name> --image <registry/image:tag> [options]
+orca ship ec2 status <deployment-id>
+orca ship ec2 logs <deployment-id> [--page <n>] [--per-page <n>]
+```
+
+EC2 deploy options:
+
+```bash
+--image <image>                 # required
+--push                          # tag/push local image to Docker Hub first
+--tag <tag>                     # custom tag when using --push
+--container-name <name>
+--port <host:container>         # repeatable
+--env <key=value>               # repeatable
+--env-file <path>
+--command <command>
+```
+
+## Example: Deploy from a Dockerfile (Lambda)
 
 From your project directory:
 
 ```bash
 docker build -t my-agent:latest .
 orca ship deploy my-agent-fn --image my-agent:latest
+```
+
+## Example: Deploy to EC2 runner
+
+```bash
+docker build -t my-agent:latest .
+orca ship ec2 deploy my-agent --image my-agent:latest --port 80:3000
+orca ship ec2 status <deployment-id>
+orca ship ec2 logs <deployment-id>
 ```
 
 ## Notes

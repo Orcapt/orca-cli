@@ -54,7 +54,13 @@ const API_ENDPOINTS = {
   LAMBDA_INVOKE: '/api/v1/cli/lambda/{functionName}/invoke',
   LAMBDA_LOGS: '/api/v1/cli/lambda/{functionName}/logs',
   LAMBDA_START: '/api/v1/cli/lambda',
-  LAMBDA_STOP: '/api/v1/cli/lambda'
+  LAMBDA_STOP: '/api/v1/cli/lambda',
+
+  // EC2 ship
+  EC2_PREPARE_PUSH: '/api/v1/cli/ship/ec2/prepare-push',
+  EC2_DEPLOY: '/api/v1/cli/ship/ec2/deploy',
+  EC2_STATUS: '/api/v1/cli/ship/ec2/{deploymentId}/status',
+  EC2_LOGS: '/api/v1/cli/ship/ec2/{deploymentId}/logs'
 };
 
 // GitHub Repository URLs
