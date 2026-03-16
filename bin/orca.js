@@ -27,7 +27,7 @@ const {
   fileDelete
 } = require('../src/commands/storage');
 const { lambdaDeploy, lambdaList, lambdaInvoke, lambdaLogs, lambdaRemove, lambdaInfo } = require('../src/commands/lambda');
-const { ec2Deploy, ec2Status, ec2Logs } = require('../src/commands/ship-ec2');
+const { ec2Deploy, ec2Stop, ec2Status, ec2Logs } = require('../src/commands/ship-ec2');
 
 // Read version from package.json
 const packageJson = JSON.parse(
@@ -358,6 +358,7 @@ shipEc2Cmd
   .option('--push', 'Push local image to Docker Hub before deploy', false)
   .option('--tag <tag>', 'Custom Docker tag when using --push')
   .option('--container-name <name>', 'Container name to run')
+  .option('--network <name>', 'Docker network to attach container to')
   .option('--port <host:container>', 'Port mapping (repeatable)', (val, memo) => { memo.push(val); return memo; }, [])
   .option('--env <key=value>', 'Environment variable (repeatable)', (val, memo) => { memo.push(val); return memo; }, [])
   .option('--env-file <path>', 'Path to .env file')
@@ -373,6 +374,14 @@ shipEc2Cmd
   .action((deploymentId) => {
     requireAuth('ship ec2 status');
     ec2Status(deploymentId);
+  });
+
+shipEc2Cmd
+  .command('stop <deployment-id>')
+  .description('Queue stop/remove operation for a deployment container')
+  .action((deploymentId) => {
+    requireAuth('ship ec2 stop');
+    ec2Stop(deploymentId);
   });
 
 shipEc2Cmd

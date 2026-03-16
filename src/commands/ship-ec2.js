@@ -181,6 +181,7 @@ async function ec2Deploy(appName, options = {}) {
         app_name: appName,
         image: deployImage,
         container_name: options.containerName || null,
+        network: options.network || null,
         ports,
         environment_vars: environmentVars,
         command: options.command || null
@@ -235,6 +236,32 @@ async function ec2Status(deploymentId) {
   }
 }
 
+async function ec2Stop(deploymentId) {
+  const credentials = requireAuth();
+  const spinner = ora('Queueing stop request...').start();
+
+  try {
+    const endpoint = API_ENDPOINTS.EC2_STOP.replace('{deploymentId}', deploymentId);
+    const response = await makeApiRequest('POST', endpoint, credentials, {});
+    spinner.succeed(chalk.green('Stop request queued'));
+
+    console.log(chalk.cyan('\n============================================================'));
+    console.log(chalk.green('✓ EC2 stop request accepted'));
+    console.log(chalk.cyan('============================================================'));
+    console.log(chalk.white('Target Deployment: '), chalk.yellow(response.target_deployment_id || deploymentId));
+    console.log(chalk.white('Stop Request ID:   '), chalk.yellow(response.stop_request_id));
+    console.log(chalk.white('Status:            '), chalk.yellow(response.status));
+    console.log(chalk.cyan('\nTrack stop request:'));
+    console.log(chalk.white('  Status:'), chalk.cyan(`orca ship ec2 status ${response.stop_request_id}`));
+    console.log(chalk.white('  Logs:  '), chalk.cyan(`orca ship ec2 logs ${response.stop_request_id}`));
+    console.log(chalk.cyan('============================================================\n'));
+  } catch (error) {
+    spinner.fail(chalk.red('Failed to queue stop request'));
+    handleError(error, 'EC2 stop request');
+    process.exit(1);
+  }
+}
+
 async function ec2Logs(deploymentId, options = {}) {
   const credentials = requireAuth();
   const spinner = ora('Fetching deployment logs...').start();
@@ -283,6 +310,7 @@ async function ec2Logs(deploymentId, options = {}) {
 
 module.exports = {
   ec2Deploy,
+  ec2Stop,
   ec2Status,
   ec2Logs
 };

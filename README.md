@@ -127,6 +127,7 @@ EC2/Hetzner deploy via runner:
 
 ```bash
 orca ship ec2 deploy <app-name> --image <registry/image:tag> [options]
+orca ship ec2 stop <deployment-id>
 orca ship ec2 status <deployment-id>
 orca ship ec2 logs <deployment-id> [--page <n>] [--per-page <n>]
 ```
@@ -138,6 +139,7 @@ EC2 deploy options:
 --push                          # tag/push local image to Docker Hub first
 --tag <tag>                     # custom tag when using --push
 --container-name <name>
+--network <name>                # docker network on runner host
 --port <host:container>         # repeatable
 --env <key=value>               # repeatable
 --env-file <path>

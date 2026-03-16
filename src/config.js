@@ -59,6 +59,7 @@ const API_ENDPOINTS = {
   // EC2 ship
   EC2_PREPARE_PUSH: '/api/v1/cli/ship/ec2/prepare-push',
   EC2_DEPLOY: '/api/v1/cli/ship/ec2/deploy',
+  EC2_STOP: '/api/v1/cli/ship/ec2/{deploymentId}/stop',
   EC2_STATUS: '/api/v1/cli/ship/ec2/{deploymentId}/status',
   EC2_LOGS: '/api/v1/cli/ship/ec2/{deploymentId}/logs'
 };
