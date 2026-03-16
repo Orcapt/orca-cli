@@ -136,11 +136,10 @@ EC2 deploy options:
 
 ```bash
 --image <image>                 # required
+--internal-port <port>          # required internal app port
 --push                          # tag/push local image to Docker Hub first
 --tag <tag>                     # custom tag when using --push
 --container-name <name>
---network <name>                # docker network on runner host
---port <host:container>         # repeatable
 --env <key=value>               # repeatable
 --env-file <path>
 --command <command>
@@ -159,7 +158,7 @@ orca ship deploy my-agent-fn --image my-agent:latest
 
 ```bash
 docker build -t my-agent:latest .
-orca ship ec2 deploy my-agent --image my-agent:latest --port 80:3000
+orca ship ec2 deploy my-agent --image my-agent:latest --internal-port 3000
 orca ship ec2 status <deployment-id>
 orca ship ec2 logs <deployment-id>
 ```

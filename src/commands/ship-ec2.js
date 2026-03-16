@@ -123,10 +123,21 @@ async function ec2Deploy(appName, options = {}) {
     process.exit(1);
   }
 
+  if (!options.internalPort) {
+    console.log(chalk.red('\n✗ --internal-port is required'));
+    console.log(chalk.cyan('Usage:'), chalk.white('orca ship ec2 deploy <app-name> --image <docker-image> --internal-port <port>\n'));
+    process.exit(1);
+  }
+
+  const internalPort = Number(options.internalPort);
+  if (!Number.isInteger(internalPort) || internalPort < 1 || internalPort > 65535) {
+    console.log(chalk.red('\n✗ --internal-port must be a valid port number (1-65535)\n'));
+    process.exit(1);
+  }
+
   const spinner = ora('Queueing EC2 deployment...').start();
   try {
     const environmentVars = parseEnvVars(options);
-    const ports = Array.isArray(options.port) ? options.port : [];
     let deployImage = options.image;
 
     if (options.push) {
@@ -180,9 +191,8 @@ async function ec2Deploy(appName, options = {}) {
       {
         app_name: appName,
         image: deployImage,
+        internal_port: internalPort,
         container_name: options.containerName || null,
-        network: options.network || null,
-        ports,
         environment_vars: environmentVars,
         command: options.command || null
       }
@@ -195,6 +205,12 @@ async function ec2Deploy(appName, options = {}) {
     console.log(chalk.white('Deployment ID:'), chalk.yellow(response.deployment_id));
     console.log(chalk.white('Status:       '), chalk.yellow(response.status));
     console.log(chalk.white('Image:        '), chalk.yellow(deployImage));
+    if (response.public_url) {
+      console.log(chalk.white('Public URL:   '), chalk.yellow(response.public_url));
+    }
+    if (response.host_port && response.internal_port) {
+      console.log(chalk.white('Port Mapping: '), chalk.yellow(`${response.host_port}:${response.internal_port}`));
+    }
     console.log(chalk.cyan('\nNext commands:'));
     console.log(chalk.white('  Status:'), chalk.cyan(`orca ship ec2 status ${response.deployment_id}`));
     console.log(chalk.white('  Logs:  '), chalk.cyan(`orca ship ec2 logs ${response.deployment_id}`));
@@ -222,6 +238,10 @@ async function ec2Status(deploymentId) {
     console.log(chalk.white('App Name:        '), chalk.yellow(response.app_name));
     console.log(chalk.white('Image:           '), chalk.yellow(response.image));
     console.log(chalk.white('Container:       '), chalk.yellow(response.container_name || '-'));
+    console.log(chalk.white('Network:         '), chalk.yellow(response.network || '-'));
+    console.log(chalk.white('Internal Port:   '), chalk.yellow(response.internal_port || '-'));
+    console.log(chalk.white('Host Port:       '), chalk.yellow(response.host_port || '-'));
+    console.log(chalk.white('Public URL:      '), chalk.yellow(response.public_url || '-'));
     console.log(chalk.white('Runner:          '), chalk.yellow(response.runner_id || '-'));
     console.log(chalk.white('Status:          '), chalk.yellow(response.status));
     console.log(chalk.white('Last Heartbeat:  '), chalk.yellow(response.last_heartbeat_at || '-'));
