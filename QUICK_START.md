@@ -1,4 +1,4 @@
-# @orcapt/cli - Quick Start Guide
+# @orca-pt/cli - Quick Start Guide
 
 Get your Orca AI agent running in less than 2 minutes! ⚡
 
@@ -9,15 +9,15 @@ Choose one of these methods:
 ### Method 1: Use directly with npx (No installation)
 
 ```bash
-npx @orcapt/cli kickstart python
+npx @orca-pt/cli kickstart python
 # or
-npx @orcapt/cli kickstart node
+npx @orca-pt/cli kickstart node
 ```
 
 ### Method 2: Install globally
 
 ```bash
-npm install -g @orcapt/cli
+npm install -g @orca-pt/cli
 orcapt kickstart python
 # or
 orcapt kickstart node

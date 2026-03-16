@@ -18,24 +18,16 @@ const CONFIG_DIR = path.join(os.homedir(), '.orcapt');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 /**
- * Make API request to authenticate
+ * Make API request to authenticate against CLI auth endpoint.
  */
-function authenticate(mode, workspace, token) {
+function authenticate(tenant, token) {
   return new Promise((resolve, reject) => {
     // Parse API URL from config
     const apiUrl = new URL(API_ENDPOINTS.AUTH, API_BASE_URL);
     const hostname = apiUrl.hostname;
-    const pathName = apiUrl.pathname;
+    const pathName = `${apiUrl.pathname}${apiUrl.search}`;
     const isHttps = apiUrl.protocol === 'https:';
     const httpModule = isHttps ? https : http;
-    // Map legacy 'dev' selection to 'pro' for the API
-    const modeValue = mode === 'team' ? 'team' : 'dev';
-
-    const postData = JSON.stringify({
-      workspace,
-      token,
-      mode: modeValue
-    });
 
     const options = {
       hostname,
@@ -43,8 +35,9 @@ function authenticate(mode, workspace, token) {
       path: pathName,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
+        'Accept': 'application/json',
+        'X-Tenant': tenant,
+        'X-Workspace': token
       }
     };
 
@@ -57,13 +50,17 @@ function authenticate(mode, workspace, token) {
 
       res.on('end', () => {
         try {
-          const response = JSON.parse(data);
-          if (response.pass === true) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
+          const response = data ? JSON.parse(data) : {};
+          const isSuccess = res.statusCode >= 200 && res.statusCode < 300 && response.pass === true;
+          resolve({
+            success: isSuccess,
+            message: response.message || response.error || null
+          });
         } catch (error) {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve({ success: true, message: null });
+            return;
+          }
           reject(new Error('Invalid response from server'));
         }
       });
@@ -72,16 +69,24 @@ function authenticate(mode, workspace, token) {
     req.on('error', (error) => {
       reject(error);
     });
-
-    req.write(postData);
     req.end();
   });
+}
+
+function isTenantResolutionError(message) {
+  if (!message) return false;
+  const lower = message.toLowerCase();
+  return lower.includes('tenant') && (
+    lower.includes('none was set') ||
+    lower.includes('not found') ||
+    lower.includes('required')
+  );
 }
 
 /**
  * Save credentials to config file
  */
-function saveCredentials(mode, workspace, token) {
+function saveCredentials(workspace, token, tenant) {
   try {
     // Create .orcapt directory if it doesn't exist
     if (!fs.existsSync(CONFIG_DIR)) {
@@ -89,9 +94,10 @@ function saveCredentials(mode, workspace, token) {
     }
 
     const config = {
-      mode,
+      mode: 'team',
       workspace,
       token,
+      tenant,
       authenticated: true,
       timestamp: new Date().toISOString()
     };
@@ -118,19 +124,6 @@ async function login() {
 
   while (!authenticated && retryCount < MAX_RETRIES) {
     try {
-      // Ask for mode
-      const modeAnswer = await inquirer.prompt([
-        {
-          type: 'list',
-          name: 'mode',
-          message: 'Select your orcapt mode:',
-          choices: [
-            { name: 'Sandbox/Pro mode', value: 'dev' },
-            { name: 'Team mode', value: 'team' }
-          ]
-        }
-      ]);
-
       // Ask for workspace name
       const workspaceAnswer = await inquirer.prompt([
         {
@@ -165,31 +158,59 @@ async function login() {
       const spinner = ora('Authenticating...').start();
 
       try {
-        const isAuthenticated = await authenticate(
-          modeAnswer.mode,
-          workspaceAnswer.workspace.trim(),
+        let resolvedTenant = workspaceAnswer.workspace.trim();
+        let authResult = await authenticate(
+          resolvedTenant,
           tokenAnswer.token.trim()
         );
 
-        if (isAuthenticated) {
+        // Fallback: only ask for tenant slug if auto resolution fails.
+        if (!authResult.success && isTenantResolutionError(authResult.message)) {
+          spinner.stop();
+          console.log(chalk.yellow('\n⚠ Could not resolve tenant from workspace automatically.'));
+          const tenantAnswer = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'tenant',
+              message: 'Enter your tenant slug:',
+              validate: (input) => {
+                if (input.trim().length === 0) {
+                  return 'Tenant slug cannot be empty';
+                }
+                return true;
+              }
+            }
+          ]);
+          resolvedTenant = tenantAnswer.tenant.trim();
+          spinner.start('Authenticating...');
+          authResult = await authenticate(
+            resolvedTenant,
+            tokenAnswer.token.trim()
+          );
+        }
+
+        if (authResult.success) {
           spinner.succeed(chalk.green('Authentication successful!'));
           
           // Save credentials
           const saved = saveCredentials(
-            modeAnswer.mode,
             workspaceAnswer.workspace.trim(),
-            tokenAnswer.token.trim()
+            tokenAnswer.token.trim(),
+            resolvedTenant
           );
 
           if (saved) {
             console.log(chalk.green('\n✓ Credentials saved successfully'));
-            console.log(chalk.cyan('\nYou can now use:'), chalk.white('orcapt kickstart <language>'));
+            console.log(chalk.cyan('\nYou can now use:'), chalk.white('orca kickstart <language> (fallback: orcapt kickstart <language>)'));
             console.log(chalk.cyan('============================================================\n'));
           }
 
           authenticated = true;
         } else {
           spinner.fail(chalk.red('Authentication failed'));
+          if (authResult.message) {
+            console.log(chalk.yellow(`Reason: ${authResult.message}`));
+          }
           retryCount++;
           
           if (retryCount < MAX_RETRIES) {

@@ -4,13 +4,29 @@
  */
 
 // Main Orca Deploy API
-// Can be overridden with ORCA_API_URL environment variable
-const API_BASE_URL = process.env.ORCA_API_URL  || 'https://deploy-stage-api.orcapt.com' ||'https://deploy-api.orcapt.com';
+// Resolution order:
+// 1) ORCA_API_URL (explicit full URL override)
+// 2) ORCA_API_<ENV>_URL (env-specific URL override)
+// 3) Built-in defaults for ORCA_ENV=local|stage|prod
+const DEFAULT_API_URLS = {
+  local: 'http://localhost:8000',
+  stage: 'https://deploy-stage-api.orcapt.com',
+  prod: 'https://deploy-api.orcapt.com'
+};
+
+const ORCA_ENV = (process.env.ORCA_ENV || 'stage').toLowerCase();
+const resolvedEnv = Object.prototype.hasOwnProperty.call(DEFAULT_API_URLS, ORCA_ENV)
+  ? ORCA_ENV
+  : 'stage';
+const envSpecificOverride = process.env[`ORCA_API_${resolvedEnv.toUpperCase()}_URL`];
+const API_BASE_URL = process.env.ORCA_API_URL || envSpecificOverride || DEFAULT_API_URLS[resolvedEnv];
 
 // API Endpoints
 const API_ENDPOINTS = {
   // Authentication
-  AUTH: '/api/v1/auth',
+  AUTH: '/api/v1/cli/auth',
+  AGENTS_LIST: '/api/v1/cli/agents',
+  AGENT_INFO: '/api/v1/cli/agents/{identifier}',
   
   // Database
   DB_CREATE: '/api/v1/db/create',
@@ -31,14 +47,14 @@ const API_ENDPOINTS = {
   STORAGE_PERMISSION_DELETE: '/api/v1/storage/permission/{permissionId}',
   
   // Lambda
-  LAMBDA_DEPLOY: '/api/v1/lambda/deploy',
-  LAMBDA_LIST: '/api/v1/lambda/list',
-  LAMBDA_INFO: '/api/v1/lambda/{functionName}',
-  LAMBDA_DELETE: '/api/v1/lambda/{functionName}',
-  LAMBDA_INVOKE: '/api/v1/lambda/{functionName}/invoke',
-  LAMBDA_LOGS: '/api/v1/lambda/{functionName}/logs',
-  LAMBDA_START: '/api/v1/lambda',
-  LAMBDA_STOP: '/api/v1/lambda'
+  LAMBDA_DEPLOY: '/api/v1/cli/ship/deploy',
+  LAMBDA_LIST: '/api/v1/cli/lambda/list',
+  LAMBDA_INFO: '/api/v1/cli/lambda/{functionName}',
+  LAMBDA_DELETE: '/api/v1/cli/lambda/{functionName}',
+  LAMBDA_INVOKE: '/api/v1/cli/lambda/{functionName}/invoke',
+  LAMBDA_LOGS: '/api/v1/cli/lambda/{functionName}/logs',
+  LAMBDA_START: '/api/v1/cli/lambda',
+  LAMBDA_STOP: '/api/v1/cli/lambda'
 };
 
 // GitHub Repository URLs
@@ -54,6 +70,7 @@ const DOCS_URLS = {
 };
 
 module.exports = {
+  ORCA_ENV: resolvedEnv,
   API_BASE_URL,
   API_ENDPOINTS,
   GITHUB_REPOS,

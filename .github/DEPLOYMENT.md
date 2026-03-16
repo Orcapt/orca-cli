@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide for @orcapt/cli
+# 🚀 Deployment Guide for @orca-pt/cli
 
 This workflow automatically publishes the CLI package to npm when a release is created.
 
@@ -29,7 +29,7 @@ The workflow automatically runs when:
 
 The workflow publishes the following package:
 
-- **Name**: `@orcapt/cli`
+- **Name**: `@orca-pt/cli`
 - **Files**: `bin/`, `src/`, `orca-kickstart/`, `README.md`, `LICENSE`, `QUICK_START.md`
 - **CLI Command**: `orcapt`
 
@@ -51,23 +51,23 @@ To publish a new version to NPM:
 3. **Automatic Publishing**:
 
    - The workflow will automatically trigger
-   - It will update the package name to `@orcapt/cli`
+   - It will update the package name to `@orca-pt/cli`
    - It will use the version from the release tag
    - Publish to NPM
 
 4. **Verify Publication**:
-   - Check npm: `https://www.npmjs.com/package/@orcapt/cli`
-   - Install and test: `npm install -g @orcapt/cli`
+   - Check npm: `https://www.npmjs.com/package/@orca-pt/cli`
+   - Install and test: `npm install -g @orca-pt/cli`
 
 ## 🔍 Troubleshooting
 
 If NPM publish fails:
 
 1. Verify that the `NPM_TOKEN` secret is correctly configured
-2. Ensure you have publish access to the `@orcapt` scope on npm
+2. Ensure you have publish access to the `@orca-pt` scope on npm
 3. Check that the version in the release tag is unique and not already published
 4. Review the workflow logs in the `Actions` tab
-5. Make sure the package name `@orcapt/cli` is available on npm
+5. Make sure the package name `@orca-pt/cli` is available on npm
 
 ## 📝 Manual Publishing
 

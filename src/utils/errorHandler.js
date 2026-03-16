@@ -113,7 +113,7 @@ function handleError(error, context = 'Operation') {
 
     // Specific handling for common status codes
     if (statusCode === 401) {
-      console.log(chalk.cyan('\nPlease run:'), chalk.white('orcapt login'), chalk.cyan('to authenticate\n'));
+      console.log(chalk.cyan('\nPlease run:'), chalk.white('orca login'), chalk.cyan('(fallback: orcapt login) to authenticate\n'));
     } else if (statusCode === 404) {
       console.log(chalk.yellow('\nThe requested resource was not found or doesn\'t belong to your workspace\n'));
     } else if (statusCode === 422) {

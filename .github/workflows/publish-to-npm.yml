@@ -44,7 +44,7 @@ jobs:
                   node -e "
                     const fs = require('fs');
                     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-                    pkg.name = '@orcapt/cli';
+                    pkg.name = '@orca-pt/cli';
                     pkg.version = '${VERSION}';
                     fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
                   "
@@ -71,6 +71,6 @@ jobs:
                     VERSION="${{ github.event.inputs.version }}"
                   fi
                   echo "✅ Package published successfully to NPM!"
-                  echo "📦 Package: @orcapt/cli"
+                  echo "📦 Package: @orca-pt/cli"
                   echo "🔖 Version: ${VERSION}"
                   echo "📅 Date: $(date)"

@@ -30,7 +30,7 @@ function makeApiRequest(method, endpoint, credentials, body = null) {
       headers: {
         'x-workspace': credentials.workspace,
         'x-token': credentials.token,
-        'x-mode': credentials.mode || 'dev',
+        'x-mode': credentials.mode || 'team',
         'Content-Type': 'application/json'
       }
     };
@@ -124,7 +124,7 @@ function uploadFileToApi(endpoint, credentials, filePath, bucketName, options = 
       headers: {
         'x-workspace': credentials.workspace,
         'x-token': credentials.token,
-        'x-mode': credentials.mode || 'dev',
+        'x-mode': credentials.mode || 'team',
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
         'Content-Length': contentLength
       }
@@ -192,7 +192,7 @@ function requireAuth() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('\n✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first (fallback: orcapt login)\n'));
     process.exit(1);
   }
   return credentials;

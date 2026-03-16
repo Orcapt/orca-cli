@@ -31,13 +31,13 @@ function makeApiRequest(method, endpoint, credentials, body = null) {
     const options = {
       hostname: url.hostname,
       port: url.port || (isHttps ? 443 : 80),
-      path: url.pathname,
+      path: `${url.pathname}${url.search}`,
       method: method,
       headers: {
-        'x-workspace': credentials.workspace,
-        'x-token': credentials.token,
+        'X-Workspace': credentials.token,
+        'X-Tenant': credentials.tenant || credentials.workspace,
         'Content-Type': 'application/json',
-        'x-mode' : credentials.mode
+        'Accept': 'application/json'
       }
     };
 
@@ -81,7 +81,7 @@ function requireAuth() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('\n✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first (fallback: orcapt login)\n'));
     process.exit(1);
   }
   return credentials;

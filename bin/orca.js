@@ -14,6 +14,7 @@ const kickstartNode = require('../src/commands/kickstart-node');
 const { login, isLoggedIn, getCredentials, clearCredentials } = require('../src/commands/login');
 const { uiInit, uiStart, uiRemove } = require('../src/commands/ui');
 const { dbCreate, dbList, dbRemove } = require('../src/commands/db');
+const { listAgents, showAgent } = require('../src/commands/agents');
 const fetchDoc = require('../src/commands/fetch-doc');
 const {
   bucketCreate,
@@ -31,9 +32,11 @@ const { lambdaDeploy, lambdaList, lambdaInvoke, lambdaLogs, lambdaRemove, lambda
 const packageJson = JSON.parse(
   fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')
 );
+const PRIMARY_COMMAND = 'orca';
+const FALLBACK_COMMAND = 'orcapt';
 
 program
-  .name('orcapt')
+  .name(PRIMARY_COMMAND)
   .description('CLI tool for managing orcapt projects')
   .version(packageJson.version);
 
@@ -41,7 +44,7 @@ program
 function requireAuth(commandName) {
   if (!isLoggedIn()) {
     console.log(chalk.red('\n✗ You must be logged in to use this command'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow(`${PRIMARY_COMMAND} login`), chalk.cyan(`first (fallback: ${FALLBACK_COMMAND} login)\n`));
     process.exit(1);
   }
 }
@@ -74,13 +77,14 @@ program
       console.log(chalk.cyan('\n============================================================'));
       console.log(chalk.green('✓ Authenticated'));
       console.log(chalk.cyan('============================================================'));
-      console.log(chalk.white('Mode:     '), chalk.yellow(credentials.mode === 'dev' ? 'Sandbox/Pro' : 'Team'));
+      console.log(chalk.white('Mode:     '), chalk.yellow('Team'));
       console.log(chalk.white('Workspace:'), chalk.yellow(credentials.workspace));
+      console.log(chalk.white('Tenant:   '), chalk.yellow(credentials.tenant || 'not set'));
       console.log(chalk.white('Since:    '), chalk.yellow(new Date(credentials.timestamp).toLocaleString()));
       console.log(chalk.cyan('============================================================\n'));
     } else {
       console.log(chalk.red('\n✗ Not authenticated'));
-      console.log(chalk.cyan('Run:'), chalk.yellow('orcapt login'), chalk.cyan('to authenticate\n'));
+      console.log(chalk.cyan('Run:'), chalk.yellow(`${PRIMARY_COMMAND} login`), chalk.cyan(`to authenticate (fallback: ${FALLBACK_COMMAND} login)\n`));
     }
   });
 
@@ -117,7 +121,7 @@ uiCmd
 
 // Database commands
 const dbCmd = program
-  .command('db')
+  .command('db', { hidden: true })
   .description('Manage PostgreSQL databases');
 
 dbCmd
@@ -145,23 +149,47 @@ dbCmd
     dbRemove(databaseName);
   });
 
+// Agents commands
+const agentsCmd = program
+  .command('agents')
+  .description('List and inspect accessible agents');
+
+agentsCmd
+  .command('ls')
+  .alias('list')
+  .description('List agents available for this workspace token')
+  .option('--search <text>', 'Filter by name or slug')
+  .option('--per-page <number>', 'Items per page (default: 50)', '50')
+  .action((options) => {
+    requireAuth('agents ls');
+    listAgents(options);
+  });
+
+program
+  .command('agent <identifier>')
+  .description('Show details for one agent by slug or name')
+  .action((identifier) => {
+    requireAuth('agent');
+    showAgent(identifier);
+  });
+
 // Kickstart command with subcommands for different languages
 const kickstartCmd = program
   .command('kickstart')
   .description('Quick setup for a new orcapt project')
   .action(() => {
     requireAuth('kickstart');
-    console.log(chalk.cyan('\n📚 Usage:'), chalk.white('orcapt kickstart <language> [options]\n'));
+    console.log(chalk.cyan('\n📚 Usage:'), chalk.white(`${PRIMARY_COMMAND} kickstart <language> [options]\n`));
     console.log(chalk.cyan('Available languages:\n'));
     console.log(chalk.green('  python'), '  - Python-based agent (FastAPI + OpenAI)', chalk.green('✓ Available'));
     console.log(chalk.green('  node'), '    - Node.js-based agent (Express + OpenAI)', chalk.green('✓ Available'));
     console.log(chalk.yellow('  go'), '      - Go-based agent', chalk.yellow('🚧 Coming soon'));
     console.log();
     console.log(chalk.cyan('Examples:'));
-    console.log(chalk.white('  orcapt kickstart python'));
-    console.log(chalk.white('  orcapt kickstart node'));
+    console.log(chalk.white(`  ${PRIMARY_COMMAND} kickstart python`));
+    console.log(chalk.white(`  ${PRIMARY_COMMAND} kickstart node`));
     console.log();
-    console.log(chalk.cyan('Help:'), chalk.white('orcapt kickstart <language> --help\n'));
+    console.log(chalk.cyan('Help:'), chalk.white(`${PRIMARY_COMMAND} kickstart <language> --help\n`));
   });
 
 // Python starter kit
@@ -195,7 +223,7 @@ kickstartCmd
   .description('Set up a Go-based orcapt agent (Coming soon)')
   .action(() => {
     console.log(chalk.yellow('\n⚠ Go starter kit is coming soon!'));
-    console.log(chalk.cyan('For now, use:'), chalk.white('orcapt kickstart python\n'));
+    console.log(chalk.cyan('For now, use:'), chalk.white(`${PRIMARY_COMMAND} kickstart python\n`));
   });
 
 // Fetch commands
@@ -210,7 +238,7 @@ fetchCmd
 
 // Storage commands
 const storageCmd = program
-  .command('storage')
+  .command('storage', { hidden: true })
   .description('Manage S3-like storage buckets and files');
 
 // Bucket subcommands
@@ -296,9 +324,13 @@ storageCmd
 
 // Permission commands removed as per user request
 
-// Ship command - Deploy Docker images to Lambda
-program
-  .command('ship <function-name>')
+// Ship commands - shipment namespace
+const shipCmd = program
+  .command('ship')
+  .description('Manage shipment targets and deployments');
+
+shipCmd
+  .command('deploy <function-name>')
   .description('🚀 Deploy Docker image to AWS Lambda')
   .option('--image <image>', 'Docker image (registry/image:tag)')
   .option('--memory <mb>', 'Memory in MB', '512')
@@ -306,13 +338,63 @@ program
   .option('--env <key=value>', 'Environment variable (can be repeated)', (val, memo) => { memo.push(val); return memo; }, [])
   .option('--env-file <path>', 'Path to .env file')
   .action((functionName, options) => {
-    requireAuth('ship');
+    requireAuth('ship deploy');
     lambdaDeploy(functionName, options);
+  });
+
+const shipLambdaCmd = shipCmd
+  .command('lambda')
+  .description('Manage shipped AWS Lambda functions');
+
+shipLambdaCmd
+  .command('list')
+  .description('List Lambda functions')
+  .action(() => {
+    requireAuth('ship lambda list');
+    lambdaList();
+  });
+
+shipLambdaCmd
+  .command('info <function-name>')
+  .description('Get Lambda function details')
+  .action((functionName) => {
+    requireAuth('ship lambda info');
+    lambdaInfo(functionName);
+  });
+
+shipLambdaCmd
+  .command('invoke <function-name>')
+  .description('Invoke Lambda function')
+  .option('--payload <json>', 'JSON payload')
+  .option('--path <path>', 'HTTP path to invoke (e.g., health, api/v1/users)')
+  .action((functionName, options) => {
+    requireAuth('ship lambda invoke');
+    lambdaInvoke(functionName, options);
+  });
+
+shipLambdaCmd
+  .command('logs <function-name>')
+  .description('Get Lambda function logs')
+  .option('--tail', 'Stream logs in real-time')
+  .option('--since <time>', 'Show logs since (e.g., 1h, 30m)', '10m')
+  .option('--page <number>', 'Page number (default: 1)', '1')
+  .option('--per-page <number>', 'Number of logs per page (default: 100, max: 1000)', '100')
+  .action((functionName, options) => {
+    requireAuth('ship lambda logs');
+    lambdaLogs(functionName, options);
+  });
+
+shipLambdaCmd
+  .command('remove <function-name>')
+  .description('Remove Lambda function')
+  .action((functionName) => {
+    requireAuth('ship lambda remove');
+    lambdaRemove(functionName);
   });
 
 // Lambda commands (alias for backward compatibility)
 const lambdaCmd = program
-  .command('lambda')
+  .command('lambda', { hidden: true })
   .description('Manage AWS Lambda functions');
 
 lambdaCmd
@@ -364,7 +446,7 @@ lambdaCmd
 // Handle unknown commands
 program.on('command:*', () => {
   console.error(chalk.red(`\n✗ Invalid command: ${program.args.join(' ')}\n`));
-  console.log(chalk.cyan('Run'), chalk.yellow('orcapt --help'), chalk.cyan('to see available commands\n'));
+  console.log(chalk.cyan('Run'), chalk.yellow(`${PRIMARY_COMMAND} --help`), chalk.cyan(`to see available commands (fallback: ${FALLBACK_COMMAND} --help)\n`));
   process.exit(1);
 });
 

@@ -29,7 +29,7 @@ function makeApiRequest(method, path, credentials) {
         'x-workspace': credentials.workspace,
         'x-token': credentials.token,
         'Content-Type': 'application/json',
-        'x-mode' : credentials.mode
+        'x-mode' : credentials.mode || 'team'
       }
     };
 
@@ -74,7 +74,7 @@ async function dbCreate(options) {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first (fallback: orcapt login)\n'));
     process.exit(1);
   }
 
@@ -127,7 +127,7 @@ async function dbList() {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first (fallback: orcapt login)\n'));
     process.exit(1);
   }
 
@@ -185,7 +185,7 @@ async function dbRemove(databaseName) {
   const credentials = getCredentials();
   if (!credentials) {
     console.log(chalk.red('✗ Not authenticated'));
-    console.log(chalk.cyan('Please run:'), chalk.yellow('orcapt login'), chalk.cyan('first\n'));
+    console.log(chalk.cyan('Please run:'), chalk.yellow('orca login'), chalk.cyan('first (fallback: orcapt login)\n'));
     process.exit(1);
   }
 
