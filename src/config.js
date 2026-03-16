@@ -11,10 +11,10 @@
 const DEFAULT_API_URLS = {
   local: 'http://localhost:8000',
   stage: 'https://deploy-stage-api.orcapt.com',
-  prod: 'https://deploy-api.orcapt.com'
+  prod: 'https://api.orcapt.com'
 };
 
-const ORCA_ENV = (process.env.ORCA_ENV || 'stage').toLowerCase();
+const ORCA_ENV = (process.env.ORCA_ENV || 'prod').toLowerCase();
 const resolvedEnv = Object.prototype.hasOwnProperty.call(DEFAULT_API_URLS, ORCA_ENV)
   ? ORCA_ENV
   : 'stage';
